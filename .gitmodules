@@ -1,0 +1,12 @@
+[submodule "deps/etl"]
+	path = deps/etl
+	url = git@github.com:ETLCPP/etl.git
+[submodule "deps/GSL"]
+	path = deps/GSL
+	url = git@github.com:microsoft/GSL.git
+[submodule "deps/libmicro"]
+	path = deps/libmicro
+	url = git@github.com:iwasz/libmicro.git
+[submodule "deps/umm_malloc"]
+	path = deps/umm_malloc
+	url = https://github.com/rhempel/umm_malloc.git
