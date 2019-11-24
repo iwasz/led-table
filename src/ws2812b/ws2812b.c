@@ -130,7 +130,7 @@ static void TIM1_init (void)
                 Error_Handler ();
         }
 
-        __HAL_TIM_DISABLE (&TIM1_handle);
+         __HAL_TIM_DISABLE (&TIM1_handle);
 }
 
 DMA_HandleTypeDef dmaUpdate;
@@ -627,11 +627,10 @@ static void ws2812b_set_pixel (uint8_t row, uint16_t column, uint8_t red, uint8_
 
 void ws2812b_init ()
 {
-        ws2812b_gpio_init ();
-
         /*TIM2_init();
         DMA_init();*/
 
+        ws2812b_gpio_init ();
         DMA2_init ();
         TIM1_init ();
 
