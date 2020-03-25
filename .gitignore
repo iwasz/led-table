@@ -1,0 +1,8 @@
+.clangd
+.vscode
+CMakeLists.txt.user
+CMakeLists.txt.user.22
+CMakeLists.txt.user.4.10-pre1
+build-led-table-stm32f446xx-Debug
+build
+compile_commands.json

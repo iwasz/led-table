@@ -17,7 +17,7 @@
 #include "stm32f4xx_hal.h"
 #include "ws2812b.h"
 
-extern WS2812_Struct ws2812b;
+WS2812_Struct ws2812b;
 
 // Define source arrays for my DMAs
 uint32_t WS2812_IO_High[] = {WS2812B_PINS};
@@ -130,7 +130,7 @@ static void TIM1_init (void)
                 Error_Handler ();
         }
 
-         __HAL_TIM_DISABLE (&TIM1_handle);
+        __HAL_TIM_DISABLE (&TIM1_handle);
 }
 
 DMA_HandleTypeDef dmaUpdate;
