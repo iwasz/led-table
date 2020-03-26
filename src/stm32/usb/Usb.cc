@@ -27,17 +27,17 @@ Usb::Usb ()
         USBH_Start (&hUSBHost);
 
         /*--------------------------------------------------------------------------*/
-        // once
+        // once (can be run after USBH_Process has ben run)
 
-        if (USBH_HID_GetDeviceType (&hUSBHost) == HID_KEYBOARD) {
-                debug->println ("Keyboard detected");
-        }
-        else if (USBH_HID_GetDeviceType (&hUSBHost) == HID_MOUSE) {
-                debug->println ("Mouse detected");
-        }
-        else {
-                debug->println ("Keyboard detected");
-        }
+        // if (USBH_HID_GetDeviceType (&hUSBHost) == HID_KEYBOARD) {
+        //         debug->println ("Keyboard detected");
+        // }
+        // else if (USBH_HID_GetDeviceType (&hUSBHost) == HID_MOUSE) {
+        //         debug->println ("Mouse detected");
+        // }
+        // else {
+        //         debug->println ("Keyboard detected");
+        // }
 
         /*--------------------------------------------------------------------------*/
         // once
@@ -54,7 +54,7 @@ void Usb::run ()
         USBH_Process (&hUSBHost);
 
         processKeyboard ();
-        processMouse ();
+        // processMouse ();
 }
 
 /****************************************************************************/
