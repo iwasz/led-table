@@ -16,6 +16,17 @@ INCLUDE_DIRECTORIES ("${LIB_MICRO_ROOT}/src")
 SET (UMM_MALLOC_ROOT "deps/umm_malloc")
 include_directories ("${UMM_MALLOC_ROOT}/src" "${UMM_MALLOC_ROOT}/includes/c-helper-macros")
 
+INCLUDE_DIRECTORIES("deps/STM32F4xx_HAL_Driver/Inc/")
+INCLUDE_DIRECTORIES("deps/CMSIS/Device/ST/STM32F4xx/Include/")
+INCLUDE_DIRECTORIES("deps/CMSIS/Include/")
+
+SET (USBH_ROOT "deps/STM32_USB_Host_Library")
+INCLUDE_DIRECTORIES("${USBH_ROOT}/Core/Inc")
+INCLUDE_DIRECTORIES("${USBH_ROOT}/Class/HID/Inc")
+INCLUDE_DIRECTORIES("src/stm32/usb")
+
+add_definitions("-DUSE_USB_FS=1")
+
 # +-----------------+
 # | My code         |
 # +-----------------+
@@ -23,6 +34,9 @@ ADD_EXECUTABLE(${CMAKE_PROJECT_NAME}.elf
     "src/main.cc"
     "src/Snake.cc"
     "src/stm32/Buttons.cc"
+    
+    "src/stm32/usb/Usb.cc"
+    "src/stm32/usb/usbh_conf.c"
 
     "src/ws2812b/ws2812b.c"
 
@@ -45,6 +59,16 @@ ADD_EXECUTABLE(${CMAKE_PROJECT_NAME}.elf
     "${STARTUP_CODE}"
     "src/stm32/stm32f4xx_it.c"
     "src/stm32/system_stm32f4xx.c"
+
+    "deps/STM32_USB_Host_Library/Core/Src/usbh_core.c"
+    "deps/STM32_USB_Host_Library/Core/Src/usbh_ctlreq.c"
+    "deps/STM32_USB_Host_Library/Core/Src/usbh_ioreq.c"
+    "deps/STM32_USB_Host_Library/Core/Src/usbh_pipes.c"
+
+    "deps/STM32_USB_Host_Library/Class/HID/Src/usbh_hid_keybd.c"
+    "deps/STM32_USB_Host_Library/Class/HID/Src/usbh_hid_mouse.c"
+    "deps/STM32_USB_Host_Library/Class/HID/Src/usbh_hid_parser.c"
+    "deps/STM32_USB_Host_Library/Class/HID/Src/usbh_hid.c"
 
     # "deps/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_adc_ex.c"
     # "deps/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_adc.c"
@@ -129,7 +153,7 @@ ADD_EXECUTABLE(${CMAKE_PROJECT_NAME}.elf
     # "deps/STM32F4xx_HAL_Driver/Src/stm32f4xx_ll_spi.c"
     # "deps/STM32F4xx_HAL_Driver/Src/stm32f4xx_ll_tim.c"
     # "deps/STM32F4xx_HAL_Driver/Src/stm32f4xx_ll_usart.c"
-    # "deps/STM32F4xx_HAL_Driver/Src/stm32f4xx_ll_usb.c"
+    "deps/STM32F4xx_HAL_Driver/Src/stm32f4xx_ll_usb.c"
     # "deps/STM32F4xx_HAL_Driver/Src/stm32f4xx_ll_utils.c"
 )
 

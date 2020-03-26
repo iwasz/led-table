@@ -11,6 +11,7 @@
 #include "FrameBuffer.h"
 #include "GenericGraphics.h"
 #include "Ncurses.h"
+#include "stm32/usb/Usb.hh"
 
 using FrameBufferType = le::fb::FrameBuffer<32, 32>;
 // extern FrameBufferType fb;
@@ -48,4 +49,10 @@ auto &getSingleButton ()
 {
         static le::SingleButton singleButton;
         return singleButton;
+}
+
+auto &getUsb ()
+{
+        static le::usb::Usb usb;
+        return usb;
 }

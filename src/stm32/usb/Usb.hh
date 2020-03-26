@@ -7,24 +7,23 @@
  ****************************************************************************/
 
 #pragma once
+#include "Hal.h"
+#include "usbh_conf.h"
+#include "usbh_core.h"
+#include "usbh_def.h"
+#include "usbh_hid.h"
+#include "usbh_hid_mouse.h"
+#include "usbh_hid_parser.h"
 
-namespace le {
+namespace le::usb {
 
-/**
- * @brief The IGame struct
- */
-struct IGame {
+class Usb {
+public:
+        Usb ();
+        void run ();
 
-        IGame () = default;
-        virtual ~IGame () = default;
-        IGame (IGame const &) = delete;
-        IGame &operator= (IGame const &) = delete;
-        IGame (IGame &&) = delete;
-        IGame &operator= (IGame &&) = delete;
-
-        virtual void run () = 0;
-        virtual int getScore () const = 0;
-        virtual void reset () = 0;
+private:
+        USBH_HandleTypeDef hUSBHost;
 };
 
-} // namespace le
+} // namespace le::usb

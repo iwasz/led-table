@@ -42,14 +42,19 @@ int main ()
         Usart debugUart{USART2, 115200};
         static Debug debug (&debugUart);
         ::debug = &debug;
-        debug.print ("test\r\n");
+        debug.print ("Led table\r\n");
 
         Timer timer{};
+
+        getUsb ();
 
         // tetrisConstructor ();
         le::snake::Game snake{getGraphics (), getSingleButton ()};
 
         while (true) {
+                getUsb ().run ();
+                continue;
+
                 while (!timer.isExpired ()) {
                 }
 

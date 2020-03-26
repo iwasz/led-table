@@ -6,7 +6,7 @@
  *  ~~~~~~~~~                                                               *
  ****************************************************************************/
 
-#pragma "once"
+#pragma once
 #include "Buttons.h"
 #include "GenericGraphics.h"
 #include "Geometry.h"
