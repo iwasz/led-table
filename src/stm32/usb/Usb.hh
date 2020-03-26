@@ -23,7 +23,11 @@ public:
         void run ();
 
 private:
-        USBH_HandleTypeDef hUSBHost;
+        void processMouse ();
+        void processKeyboard ();
+
+private:
+        USBH_HandleTypeDef hUSBHost{};
 };
 
 } // namespace le::usb
