@@ -53,8 +53,22 @@ void Usb::run ()
         /* USB Host Background task */
         USBH_Process (&hUSBHost);
 
-        processKeyboard ();
+        // processKeyboard ();
         // processMouse ();
+        processGamepad ();
+}
+
+/****************************************************************************/
+
+void Usb::processGamepad ()
+{
+        HidGamepadInfo *info = usbhHidGetGamepadInfo (&hUSBHost);
+
+        if (info != nullptr) {
+                debug->print (info->a);
+                debug->print (" ");
+                debug->println (info->b);
+        }
 }
 
 /****************************************************************************/

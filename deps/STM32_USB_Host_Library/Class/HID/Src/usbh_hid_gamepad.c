@@ -11,11 +11,7 @@
 
 /****************************************************************************/
 
-static USBH_StatusTypeDef USBH_HID_KeybdDecode (USBH_HandleTypeDef *phost);
-
-/****************************************************************************/
-
-HidGamepadInfo keybd_info;
+static HidGamepadInfo gamepadInfo;
 uint32_t gamepad_report_data[2];
 
 // /****************************************************************************/
@@ -195,10 +191,10 @@ USBH_StatusTypeDef usbhHidGamepadInit (USBH_HandleTypeDef *phost)
         uint32_t x;
         HID_HandleTypeDef *HID_Handle = (HID_HandleTypeDef *)phost->pActiveClass->pData;
 
-        keybd_info.lctrl = keybd_info.lshift = 0;
-        keybd_info.lalt = keybd_info.lgui = 0;
-        keybd_info.rctrl = keybd_info.rshift = 0;
-        keybd_info.ralt = keybd_info.rgui = 0;
+        // gamepadInfo.lctrl = gamepadInfo.lshift = 0;
+        // gamepadInfo.lalt = gamepadInfo.lgui = 0;
+        // gamepadInfo.rctrl = gamepadInfo.rshift = 0;
+        // gamepadInfo.ralt = gamepadInfo.rgui = 0;
 
         for (x = 0; x < (sizeof (gamepad_report_data) / sizeof (uint32_t)); x++) {
                 gamepad_report_data[x] = 0;
@@ -221,31 +217,15 @@ USBH_StatusTypeDef usbhHidGamepadInit (USBH_HandleTypeDef *phost)
  */
 HidGamepadInfo *usbhHidGetGamepadInfo (USBH_HandleTypeDef *phost)
 {
-        if (USBH_HID_KeybdDecode (phost) == USBH_OK) {
-                return &keybd_info;
-        }
-        else {
+        HID_HandleTypeDef *HID_Handle = (HID_HandleTypeDef *)phost->pActiveClass->pData;
+
+        if (HID_Handle->length == 0) {
                 return NULL;
         }
-}
 
-/**
- * @brief  USBH_HID_KeybdDecode
- *         The function decode keyboard data.
- * @param  phost: Host handle
- * @retval USBH Status
- */
-static USBH_StatusTypeDef USBH_HID_KeybdDecode (USBH_HandleTypeDef *phost)
-{
-        uint8_t x;
-
-        HID_HandleTypeDef *HID_Handle = (HID_HandleTypeDef *)phost->pActiveClass->pData;
-        if (HID_Handle->length == 0) {
-                return USBH_FAIL;
-        }
-        /*Fill report */
         if (fifo_read (&HID_Handle->fifo, &gamepad_report_data, HID_Handle->length) == HID_Handle->length) {
 
+                // keybd_info.keys[0] =
                 // keybd_info.lctrl = (uint8_t)HID_ReadItem ((HID_Report_ItemTypedef *)&imp_0_lctrl, 0);
                 // keybd_info.lshift = (uint8_t)HID_ReadItem ((HID_Report_ItemTypedef *)&imp_0_lshift, 0);
                 // keybd_info.lalt = (uint8_t)HID_ReadItem ((HID_Report_ItemTypedef *)&imp_0_lalt, 0);
@@ -259,7 +239,10 @@ static USBH_StatusTypeDef USBH_HID_KeybdDecode (USBH_HandleTypeDef *phost)
                 //         keybd_info.keys[x] = (uint8_t)HID_ReadItem ((HID_Report_ItemTypedef *)&imp_0_key_array, x);
                 // }
 
-                return USBH_OK;
+                gamepadInfo.a = gamepad_report_data[0];
+                gamepadInfo.b = gamepad_report_data[1];
+                return &gamepadInfo;
         }
-        return USBH_FAIL;
+
+        return NULL;
 }

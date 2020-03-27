@@ -25,6 +25,7 @@ public:
 private:
         void processMouse ();
         void processKeyboard ();
+        void processGamepad ();
 
 private:
         USBH_HandleTypeDef hUSBHost{};

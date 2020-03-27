@@ -127,7 +127,6 @@ static USBH_StatusTypeDef USBH_HID_InterfaceInit (USBH_HandleTypeDef *phost)
         uint8_t num = 0;
         uint8_t interface;
 
-        USBH_StatusTypeDef status = USBH_FAIL;
         HID_HandleTypeDef *HID_Handle;
 
         interface = USBH_FindInterface (phost, phost->pActiveClass->ClassCode, HID_BOOT_CODE, 0xFF);
@@ -139,7 +138,6 @@ static USBH_StatusTypeDef USBH_HID_InterfaceInit (USBH_HandleTypeDef *phost)
 
                 if (interface == 0xFF) // Not BOOT subclass
                 {
-                        status = USBH_FAIL;
                         USBH_DbgLog ("Cannot Find the interface for %s class.", phost->pActiveClass->Name);
                         return USBH_FAIL;
                 }
