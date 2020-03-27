@@ -92,7 +92,7 @@
 #define USBH_ErrLog(...)                                                                                                                        \
         printf ("ERROR: ");                                                                                                                     \
         printf (__VA_ARGS__);                                                                                                                   \
-        printf ("\r\n");
+        printf ("\n");
 #else
 #define USBH_ErrLog(...)
 #endif
