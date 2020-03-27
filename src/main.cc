@@ -134,3 +134,12 @@ void __verbose_terminate_handler ()
         }
 }
 } // namespace __gnu_cxx
+
+extern "C" int _write (int file, char *ptr, int len)
+{
+        if (debug) {
+                debug->print (reinterpret_cast<uint8_t *> (ptr), len);
+        }
+
+        return len;
+}
