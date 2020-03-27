@@ -130,79 +130,86 @@ static USBH_StatusTypeDef USBH_HID_InterfaceInit (USBH_HandleTypeDef *phost)
         USBH_StatusTypeDef status = USBH_FAIL;
         HID_HandleTypeDef *HID_Handle;
 
-        // interface = USBH_FindInterface(phost, phost->pActiveClass->ClassCode, HID_BOOT_CODE, 0xFF);
-        interface = USBH_FindInterface (phost, phost->pActiveClass->ClassCode, 0xff, 0xFF);
+        interface = USBH_FindInterface (phost, phost->pActiveClass->ClassCode, HID_BOOT_CODE, 0xFF);
 
-        if (interface == 0xFF) /* No Valid Interface */
+        if (interface == 0xFF) // Not BOOT subclass
         {
-                status = USBH_FAIL;
-                USBH_DbgLog ("Cannot Find the interface for %s class.", phost->pActiveClass->Name);
-        }
-        else {
-                USBH_SelectInterface (phost, interface);
-                phost->pActiveClass->pData = (HID_HandleTypeDef *)USBH_malloc (sizeof (HID_HandleTypeDef));
-                HID_Handle = (HID_HandleTypeDef *)phost->pActiveClass->pData;
-                HID_Handle->state = HID_ERROR;
+                // Looking for a SNES gamepad. We assume that subclass == 0 and protocol == 0 is a gamepad.
+                interface = USBH_FindInterface (phost, phost->pActiveClass->ClassCode, 0x00, 0x00);
 
-                /*Decode Bootclass Protocol: Mouse or Keyboard*/
-                if (phost->device.CfgDesc.Itf_Desc[phost->device.current_interface].bInterfaceProtocol == HID_KEYBRD_BOOT_CODE) {
-                        USBH_UsrLog ("KeyBoard device found!");
-                        HID_Handle->Init = USBH_HID_KeybdInit;
-                }
-                else if (phost->device.CfgDesc.Itf_Desc[phost->device.current_interface].bInterfaceProtocol == HID_MOUSE_BOOT_CODE) {
-                        USBH_UsrLog ("Mouse device found!");
-                        HID_Handle->Init = USBH_HID_MouseInit;
-                }
-                else {
-                        USBH_UsrLog ("Protocol not supported.");
+                if (interface == 0xFF) // Not BOOT subclass
+                {
+                        status = USBH_FAIL;
+                        USBH_DbgLog ("Cannot Find the interface for %s class.", phost->pActiveClass->Name);
                         return USBH_FAIL;
                 }
-
-                HID_Handle->state = HID_INIT;
-                HID_Handle->ctl_state = HID_REQ_INIT;
-                HID_Handle->ep_addr = phost->device.CfgDesc.Itf_Desc[phost->device.current_interface].Ep_Desc[0].bEndpointAddress;
-                HID_Handle->length = phost->device.CfgDesc.Itf_Desc[phost->device.current_interface].Ep_Desc[0].wMaxPacketSize;
-                HID_Handle->poll = phost->device.CfgDesc.Itf_Desc[phost->device.current_interface].Ep_Desc[0].bInterval;
-
-                if (HID_Handle->poll < HID_MIN_POLL) {
-                        HID_Handle->poll = HID_MIN_POLL;
-                }
-
-                /* Check fo available number of endpoints */
-                /* Find the number of EPs in the Interface Descriptor */
-                /* Choose the lower number in order not to overrun the buffer allocated */
-                max_ep = ((phost->device.CfgDesc.Itf_Desc[phost->device.current_interface].bNumEndpoints <= USBH_MAX_NUM_ENDPOINTS)
-                                  ? phost->device.CfgDesc.Itf_Desc[phost->device.current_interface].bNumEndpoints
-                                  : USBH_MAX_NUM_ENDPOINTS);
-
-                /* Decode endpoint IN and OUT address from interface descriptor */
-                for (; num < max_ep; num++) {
-                        if (phost->device.CfgDesc.Itf_Desc[phost->device.current_interface].Ep_Desc[num].bEndpointAddress & 0x80) {
-                                HID_Handle->InEp
-                                        = (phost->device.CfgDesc.Itf_Desc[phost->device.current_interface].Ep_Desc[num].bEndpointAddress);
-                                HID_Handle->InPipe = USBH_AllocPipe (phost, HID_Handle->InEp);
-
-                                /* Open pipe for IN endpoint */
-                                USBH_OpenPipe (phost, HID_Handle->InPipe, HID_Handle->InEp, phost->device.address, phost->device.speed,
-                                               USB_EP_TYPE_INTR, HID_Handle->length);
-
-                                USBH_LL_SetToggle (phost, HID_Handle->InPipe, 0);
-                        }
-                        else {
-                                HID_Handle->OutEp
-                                        = (phost->device.CfgDesc.Itf_Desc[phost->device.current_interface].Ep_Desc[num].bEndpointAddress);
-                                HID_Handle->OutPipe = USBH_AllocPipe (phost, HID_Handle->OutEp);
-
-                                /* Open pipe for OUT endpoint */
-                                USBH_OpenPipe (phost, HID_Handle->OutPipe, HID_Handle->OutEp, phost->device.address, phost->device.speed,
-                                               USB_EP_TYPE_INTR, HID_Handle->length);
-
-                                USBH_LL_SetToggle (phost, HID_Handle->OutPipe, 0);
-                        }
-                }
-                status = USBH_OK;
         }
-        return status;
+
+        USBH_SelectInterface (phost, interface);
+        phost->pActiveClass->pData = (HID_HandleTypeDef *)USBH_malloc (sizeof (HID_HandleTypeDef));
+        HID_Handle = (HID_HandleTypeDef *)phost->pActiveClass->pData;
+        HID_Handle->state = HID_ERROR;
+
+        /*Decode Bootclass Protocol: Mouse or Keyboard*/
+        if (phost->device.CfgDesc.Itf_Desc[phost->device.current_interface].bInterfaceProtocol == HID_KEYBRD_BOOT_CODE) {
+                USBH_UsrLog ("KeyBoard device found!");
+                HID_Handle->Init = USBH_HID_KeybdInit;
+        }
+        else if (phost->device.CfgDesc.Itf_Desc[phost->device.current_interface].bInterfaceProtocol == HID_MOUSE_BOOT_CODE) {
+                USBH_UsrLog ("Mouse device found!");
+                HID_Handle->Init = USBH_HID_MouseInit;
+        }
+        else if (phost->device.CfgDesc.Itf_Desc[phost->device.current_interface].bInterfaceProtocol == HID_SNES_GAMEPAD_CODE) {
+                USBH_UsrLog ("Gamepad found!");
+                HID_Handle->Init = usbhHidGamepadInit;
+        }
+        else {
+                USBH_UsrLog ("Protocol not supported.");
+                return USBH_FAIL;
+        }
+
+        HID_Handle->state = HID_INIT;
+        HID_Handle->ctl_state = HID_REQ_INIT;
+        HID_Handle->ep_addr = phost->device.CfgDesc.Itf_Desc[phost->device.current_interface].Ep_Desc[0].bEndpointAddress;
+        HID_Handle->length = phost->device.CfgDesc.Itf_Desc[phost->device.current_interface].Ep_Desc[0].wMaxPacketSize;
+        HID_Handle->poll = phost->device.CfgDesc.Itf_Desc[phost->device.current_interface].Ep_Desc[0].bInterval;
+
+        if (HID_Handle->poll < HID_MIN_POLL) {
+                HID_Handle->poll = HID_MIN_POLL;
+        }
+
+        /* Check fo available number of endpoints */
+        /* Find the number of EPs in the Interface Descriptor */
+        /* Choose the lower number in order not to overrun the buffer allocated */
+        max_ep = ((phost->device.CfgDesc.Itf_Desc[phost->device.current_interface].bNumEndpoints <= USBH_MAX_NUM_ENDPOINTS)
+                          ? phost->device.CfgDesc.Itf_Desc[phost->device.current_interface].bNumEndpoints
+                          : USBH_MAX_NUM_ENDPOINTS);
+
+        /* Decode endpoint IN and OUT address from interface descriptor */
+        for (; num < max_ep; num++) {
+                if (phost->device.CfgDesc.Itf_Desc[phost->device.current_interface].Ep_Desc[num].bEndpointAddress & 0x80) {
+                        HID_Handle->InEp = (phost->device.CfgDesc.Itf_Desc[phost->device.current_interface].Ep_Desc[num].bEndpointAddress);
+                        HID_Handle->InPipe = USBH_AllocPipe (phost, HID_Handle->InEp);
+
+                        /* Open pipe for IN endpoint */
+                        USBH_OpenPipe (phost, HID_Handle->InPipe, HID_Handle->InEp, phost->device.address, phost->device.speed, USB_EP_TYPE_INTR,
+                                       HID_Handle->length);
+
+                        USBH_LL_SetToggle (phost, HID_Handle->InPipe, 0);
+                }
+                else {
+                        HID_Handle->OutEp = (phost->device.CfgDesc.Itf_Desc[phost->device.current_interface].Ep_Desc[num].bEndpointAddress);
+                        HID_Handle->OutPipe = USBH_AllocPipe (phost, HID_Handle->OutEp);
+
+                        /* Open pipe for OUT endpoint */
+                        USBH_OpenPipe (phost, HID_Handle->OutPipe, HID_Handle->OutEp, phost->device.address, phost->device.speed,
+                                       USB_EP_TYPE_INTR, HID_Handle->length);
+
+                        USBH_LL_SetToggle (phost, HID_Handle->OutPipe, 0);
+                }
+        }
+
+        return USBH_OK;
 }
 
 /**

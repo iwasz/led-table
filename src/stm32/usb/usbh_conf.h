@@ -82,7 +82,7 @@
 #if (USBH_DEBUG_LEVEL > 0)
 #define USBH_UsrLog(...)                                                                                                                        \
         printf (__VA_ARGS__);                                                                                                                   \
-        printf ("\n");
+        printf ("\r\n");
 #else
 #define USBH_UsrLog(...)
 #endif
@@ -92,7 +92,7 @@
 #define USBH_ErrLog(...)                                                                                                                        \
         printf ("ERROR: ");                                                                                                                     \
         printf (__VA_ARGS__);                                                                                                                   \
-        printf ("\n");
+        printf ("\r\n");
 #else
 #define USBH_ErrLog(...)
 #endif
@@ -101,7 +101,7 @@
 #define USBH_DbgLog(...)                                                                                                                        \
         printf ("DEBUG : ");                                                                                                                    \
         printf (__VA_ARGS__);                                                                                                                   \
-        printf ("\n");
+        printf ("\r\n");
 #else
 #define USBH_DbgLog(...)
 #endif

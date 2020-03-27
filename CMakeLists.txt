@@ -66,6 +66,7 @@ ADD_EXECUTABLE(${CMAKE_PROJECT_NAME}.elf
     "deps/STM32_USB_Host_Library/Core/Src/usbh_pipes.c"
 
     "deps/STM32_USB_Host_Library/Class/HID/Src/usbh_hid_keybd.c"
+    "deps/STM32_USB_Host_Library/Class/HID/Src/usbh_hid_gamepad.c"
     "deps/STM32_USB_Host_Library/Class/HID/Src/usbh_hid_mouse.c"
     "deps/STM32_USB_Host_Library/Class/HID/Src/usbh_hid_parser.c"
     "deps/STM32_USB_Host_Library/Class/HID/Src/usbh_hid.c"

@@ -35,8 +35,10 @@ extern "C" {
 
 /* Includes ------------------------------------------------------------------*/
 #include "usbh_core.h"
+#include "usbh_hid_gamepad.h"
 #include "usbh_hid_keybd.h"
 #include "usbh_hid_mouse.h"
+
 
 /** @addtogroup USBH_LIB
  * @{
@@ -229,6 +231,7 @@ typedef struct _HID_Process {
 
 /* Interface Descriptor field values for HID Boot Protocol */
 #define HID_BOOT_CODE 0x01
+#define HID_SNES_GAMEPAD_CODE 0x00
 #define HID_KEYBRD_BOOT_CODE 0x01
 #define HID_MOUSE_BOOT_CODE 0x02
 
