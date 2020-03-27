@@ -69,6 +69,7 @@ Device Descriptor:
           Usage Type               Data
         wMaxPacketSize     0x0008  1x 8 bytes
         bInterval              10
+```        
 
 A mouse for comparison:
 
@@ -133,11 +134,40 @@ Device Descriptor:
         bInterval           10
 ```
 
-On data:
+Stacktrace OnData:
 
+```
 USBH_LL_SubmitURB@0x080099d6 (/home/iwasz/workspace/led-table/src/stm32/usb/usbh_conf.c:317)
 USBH_InterruptReceiveData@0x0800c7f6 (/home/iwasz/workspace/led-table/deps/STM32_USB_Host_Library/Core/Src/usbh_ioreq.c:249)
 USBH_HID_Process@0x0800d1ec (/home/iwasz/workspace/led-table/deps/STM32_USB_Host_Library/Class/HID/Src/usbh_hid.c:343)
 USBH_Process@0x0800b962 (/home/iwasz/workspace/led-table/deps/STM32_USB_Host_Library/Core/Src/usbh_core.c:522)
 le::usb::Usb::run@0x08009678 (/home/iwasz/workspace/led-table/src/stm32/usb/Usb.cc:54)
 main@0x08006612 (/home/iwasz/workspace/led-table/src/main.cc:55)
+```
+
+Reverse engineering my SNES gamepad clone (report):
+
+
+
+| byte idx | meaning             | value                   |
+| -------- | ------------------- | ----------------------- |
+| 3        | joystick left-right | -128 == Left, 0 neutral |
+| 4        | joystick up-down    | -128 == Up, 0 neutral   |
+| 5        | colored buttons     | bitmask (see below)     |
+| 6        | grey buttons        | bitmask (see below      |
+
+| bit (byte 5) | button     |
+| ------------ | ---------- |
+| 0x1f         | blue (X)   |
+| 0x2f         | red (A)    |
+| 0x4f         | yellow (B) |
+| 0x8f         | green (Y)  |
+
+| bit (byte 6) | button |
+| ------------ | ------ |
+| 0x01         | L      |
+| 0x02         | R      |
+| 0x10         | Select |
+| 0x20         | Start  |
+
+

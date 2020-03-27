@@ -65,9 +65,9 @@ void Usb::processGamepad ()
         HidGamepadInfo *info = usbhHidGetGamepadInfo (&hUSBHost);
 
         if (info != nullptr) {
-                debug->print (info->a);
+                debug->print (info->x);
                 debug->print (" ");
-                debug->println (info->b);
+                debug->println (info->y);
         }
 }
 

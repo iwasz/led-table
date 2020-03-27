@@ -14,19 +14,27 @@ extern "C" {
 
 #include "usbh_hid.h"
 
+// Button 0
+#define BUTTON_X 0x0010
+// Button 1
+#define BUTTON_A 0x0020
+// Button 2
+#define BUTTON_B 0x0040
+// Button 3
+#define BUTTON_Y 0x0080
+// Button 4
+#define BUTTON_L 0x0100
+// Button 5
+#define BUTTON_R 0x0200
+// Button 8
+#define BUTTON_SELECT 0x0400
+// Button 9
+#define BUTTON_START 0x0800
+
 typedef struct {
-        // uint8_t state;
-        // uint8_t lctrl;
-        // uint8_t lshift;
-        // uint8_t lalt;
-        // uint8_t lgui;
-        // uint8_t rctrl;
-        // uint8_t rshift;
-        // uint8_t ralt;
-        // uint8_t rgui;
-        // uint8_t keys[8];
-        uint32_t a;
-        uint32_t b;
+        int16_t x; // TODO int8_t ?
+        int16_t y;
+        uint16_t buttons;
 } HidGamepadInfo;
 
 USBH_StatusTypeDef usbhHidGamepadInit (USBH_HandleTypeDef *phost);
