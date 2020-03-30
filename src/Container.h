@@ -11,15 +11,10 @@
 #include "FrameBuffer.h"
 #include "GenericGraphics.h"
 #include "Ncurses.h"
-#include "stm32/usb/Usb.hh"
 
+namespace le {
 using FrameBufferType = le::fb::FrameBuffer<32, 32>;
-// extern FrameBufferType fb;
-
 using NcursesStateType = le::nc::NcursesState<FrameBufferType>;
-// extern NcursesStateType ncurses;
-
-// extern le::Buttons buttons;
 
 auto &getFrameBuffer ()
 {
@@ -51,8 +46,4 @@ auto &getSingleButton ()
         return singleButton;
 }
 
-auto &getUsb ()
-{
-        static le::usb::Usb usb;
-        return usb;
-}
+} // namespace le

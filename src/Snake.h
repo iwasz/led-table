@@ -108,62 +108,60 @@ template <typename G, typename B> Game<G, B>::Game (G &graphics, B const &button
 
 template <typename G, typename B> void Game<G, B>::run ()
 {
-        if (timer.isExpired ()) {
-                if (!runnuing) {
-                        return;
-                }
+        if (!timer.isExpired () || !runnuing) {
+                return;
+        }
 
-                graphics.clear ();
-                generateApplesIfNecessary ();
-                // manageApples ();
-                drawWalls ();
-                drawSnake ();
-                drawApples ();
+        graphics.clear ();
+        generateApplesIfNecessary ();
+        // manageApples ();
+        drawWalls ();
+        drawSnake ();
+        drawApples ();
 
-                if (auto pressed = buttons.getButton (); pressed) {
-                        if (auto heading = buttonsToHeading (*pressed); heading) {
-                                if (*heading == oppositeHeading (body.headDirection)) {
-                                        gameOver ();
-                                        return;
-                                }
-
-                                body.bend (*heading);
-                        }
-                }
-
-                body.advanceSnake ();
-                Point &head = body.points.front ();
-
-                // Collision with apples
-                if (auto i = std::find (apples.cbegin (), apples.cend (), head); i != apples.end ()) {
-                        static int j = 0;
-                        // fmt::print ("Score : {}\n", ++j);
-                        body.lenghten ();
-                        apples.erase (i);
-                }
-
-                // Collision with walls (screen boundarties)
-                if (head.x < 0 || head.x >= G::WIDTH || head.y < 0 || head.y >= G::HEIGHT) {
-                        gameOver ();
-                        return;
-                }
-
-                // Collision with itself
-                bool firstSkipped = false;
-                pathForEach (body.points, [this, head, &firstSkipped] (auto const &a, auto const &b) {
-                        if (!firstSkipped) {
-                                firstSkipped = true;
-                                return;
-                        }
-
-                        if (intersects (Line{a, b}, head)) {
+        if (auto pressed = buttons.getButton (); pressed) {
+                if (auto heading = buttonsToHeading (*pressed); heading) {
+                        if (*heading == oppositeHeading (body.headDirection)) {
                                 gameOver ();
                                 return;
                         }
-                });
 
-                timer.start (LOOP_FREQ);
+                        body.bend (*heading);
+                }
         }
+
+        body.advanceSnake ();
+        Point &head = body.points.front ();
+
+        // Collision with apples
+        if (auto i = std::find (apples.cbegin (), apples.cend (), head); i != apples.end ()) {
+                static int j = 0;
+                // fmt::print ("Score : {}\n", ++j);
+                body.lenghten ();
+                apples.erase (i);
+        }
+
+        // Collision with walls (screen boundarties)
+        if (head.x < 0 || head.x >= G::WIDTH || head.y < 0 || head.y >= G::HEIGHT) {
+                gameOver ();
+                return;
+        }
+
+        // Collision with itself
+        bool firstSkipped = false;
+        pathForEach (body.points, [this, head, &firstSkipped] (auto const &a, auto const &b) {
+                if (!firstSkipped) {
+                        firstSkipped = true;
+                        return;
+                }
+
+                if (intersects (Line{a, b}, head)) {
+                        gameOver ();
+                        return;
+                }
+        });
+
+        timer.start (LOOP_FREQ);
 }
 
 /****************************************************************************/
