@@ -46,25 +46,23 @@ int main ()
 
         Timer timer{};
 
-        getUsb ();
-
         // tetrisConstructor ();
-        le::snake::Game snake{getGraphics (), getSingleButton ()};
+        // le::snake::Game snake{getGraphics (), getSingleButton ()};
 
         while (true) {
                 getUsb ().run ();
-                continue;
 
-                while (!timer.isExpired ()) {
+                if (!timer.isExpired ()) {
+                        continue;
                 }
 
-                timer.start (FRAME_DURATION_MS);
+                // timer.start (FRAME_DURATION_MS);
 
-                debug.print ("#\r\n");
-                snake.run ();
+                // debug.print ("#\r\n");
+                // snake.run ();
 
-                int window{};
-                le::fb::display (getFrameBuffer (), window, {0, 0});
+                // int window{};
+                // le::fb::display (getFrameBuffer (), window, {0, 0});
         }
 
         return 0;

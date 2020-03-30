@@ -47,7 +47,7 @@ template <typename T, typename Act> void pathForEach (T const &pointCollection, 
                 return;
         }
 
-        Point prev;
+        Point prev{};
         for (auto i = pointCollection.cbegin (); i != pointCollection.cend (); ++i) {
                 if (i == pointCollection.cbegin ()) {
                         prev = *i;
@@ -60,7 +60,7 @@ template <typename T, typename Act> void pathForEach (T const &pointCollection, 
 }
 
 // TODO
-template <typename T> bool intersects (LineT<T> const &l1, LineT<T> const &l2) { return true; }
+template <typename T> bool intersects (LineT<T> const & /* l1 */, LineT<T> const & /* l2 */) { return true; }
 
 template <typename L> L normalize (L l)
 {

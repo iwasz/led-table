@@ -546,7 +546,7 @@ static void ws2812b_set_pixel (uint8_t row, uint16_t column, uint8_t red, uint8_
 #elif defined(SETPIX_4)
 
         // Bitband optimizations with pure increments, 5us interrupts
-        uint32_t *bitBand = BITBAND_SRAM (&ws2812bDmaBitBuffer[(calcCol)], row);
+        volatile uint32_t *bitBand = BITBAND_SRAM (&ws2812bDmaBitBuffer[(calcCol)], row);
 
         *bitBand = (invGreen >> 7);
         bitBand += 16;

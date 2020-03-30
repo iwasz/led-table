@@ -43,7 +43,7 @@ Usb::Usb ()
         // once
 
         /* Force HID Device to re-enumerate */
-        USBH_ReEnumerate (&hUSBHost);
+        // USBH_ReEnumerate (&hUSBHost);
 }
 
 /****************************************************************************/

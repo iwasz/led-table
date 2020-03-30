@@ -62,9 +62,9 @@ public:
         explicit Game (G &graphics, B const &buttons);
 
         void run () override;
-        int getScore () const { return body.length - INITIAL_LEN; }
+        int getScore () const override { return body.length - INITIAL_LEN; }
 
-        void reset ()
+        void reset () override
         {
                 body = Body{ENTRY_POINT, INITIAL_LEN};
                 apples.clear ();
@@ -172,7 +172,7 @@ template <typename G, typename B> void Game<G, B>::generateApplesIfNecessary ()
 {
         int numerApplesNeeded = body.length / 3;
 
-        while (apples.size () < numerApplesNeeded) {
+        while (int (apples.size ()) < numerApplesNeeded) {
                 Point newApple = {std::rand () % WIDTH, std::rand () % HEIGHT};
 
                 bool appleOnTheBody = false;
