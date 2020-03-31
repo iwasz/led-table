@@ -11,6 +11,7 @@
 #include "FrameBuffer.h"
 #include "GenericGraphics.h"
 #include "Ncurses.h"
+#include "System.hh"
 
 namespace le {
 using FrameBufferType = le::fb::FrameBuffer<32, 32>;
@@ -44,6 +45,16 @@ auto &getSingleButton ()
 {
         static le::SingleButton singleButton;
         return singleButton;
+}
+
+auto &getButtonQueue ()
+{
+#ifdef WITH_EMULATOR
+        static le::ButtonQueue bq;
+#else
+        static le::ButtonQueue bq (system::getUsb ());
+#endif
+        return bq;
 }
 
 } // namespace le

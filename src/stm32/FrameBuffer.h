@@ -85,7 +85,7 @@ template <int W, int H> FrameBuffer<W, H>::FrameBuffer ()
  * @param frameBuffer
  * @param window
  */
-template <typename Fb, typename Win> void display (Fb const &fb, Win &window, Dimension const &pixelDimension)
+template <typename Fb, typename Win> void display (Fb const & /* fb */, Win & /* window */, Dimension const & /* pixelDimension */)
 {
         if (ws2812b.transferComplete) {
                 ws2812b.startTransfer = 1;

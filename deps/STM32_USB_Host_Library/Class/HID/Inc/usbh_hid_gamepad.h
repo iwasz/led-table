@@ -26,10 +26,10 @@ extern "C" {
 #define BUTTON_L 0x0100
 // Button 5
 #define BUTTON_R 0x0200
-// Button 8
-#define BUTTON_SELECT 0x0400
-// Button 9
-#define BUTTON_START 0x0800
+// Button 8. TODO probably wrong value
+#define BUTTON_SELECT 0x1000
+// Button 9. TODO probably wrong value
+#define BUTTON_START 0x2000
 
 typedef struct {
         int16_t x; // TODO int8_t ?

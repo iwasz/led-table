@@ -16,8 +16,8 @@ namespace le::log {
 
 void init ()
 {
-        Gpio debugUartGpios{GPIOA, GPIO_PIN_2 | GPIO_PIN_3, GPIO_MODE_AF_OD, GPIO_PULLUP, GPIO_SPEED_FREQ_HIGH, GPIO_AF7_USART2};
-        Usart debugUart{USART2, 115200};
+        static Gpio debugUartGpios{GPIOA, GPIO_PIN_2 | GPIO_PIN_3, GPIO_MODE_AF_OD, GPIO_PULLUP, GPIO_SPEED_FREQ_HIGH, GPIO_AF7_USART2};
+        static Usart debugUart{USART2, 115200};
         static Debug debug (&debugUart);
         ::debug = &debug;
 }

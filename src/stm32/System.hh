@@ -7,15 +7,21 @@
  ****************************************************************************/
 
 #pragma once
-#include "stm32/usb/Usb.hh"
+#include "stm32/usb/UsbHidController.hh"
 
 namespace le::system {
 void init ();
 
 inline auto &getUsb ()
 {
-        static le::usb::Usb usb;
+        static le::usb::UsbHidController usb;
         return usb;
+}
+
+inline int &getWindow ()
+{
+        static int i{};
+        return i;
 }
 
 } // namespace le::system

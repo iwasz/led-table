@@ -100,6 +100,52 @@ void SingleButton::onPress ()
         }
 }
 
+/****************************************************************************/
+
 void SingleButton::onRelease () { currentButton = Button::NONE; }
+
+/****************************************************************************/
+
+void ButtonQueue::onPress ()
+{
+        Button currentButton{};
+
+        if (sf::Keyboard::isKeyPressed (sf::Keyboard::Q)) {
+                currentButton = Button::Q;
+        }
+        else if (sf::Keyboard::isKeyPressed (sf::Keyboard::W)) {
+                currentButton = Button::W;
+        }
+        else if (sf::Keyboard::isKeyPressed (sf::Keyboard::A)) {
+                currentButton = Button::A;
+        }
+        else if (sf::Keyboard::isKeyPressed (sf::Keyboard::S)) {
+                currentButton = Button::S;
+        }
+        else if (sf::Keyboard::isKeyPressed (sf::Keyboard::D)) {
+                currentButton = Button::D;
+        }
+
+        if (queue.size () < 4) {
+                queue.push_back (currentButton);
+        }
+}
+
+/****************************************************************************/
+
+void ButtonQueue::onRelease () {}
+
+/****************************************************************************/
+
+Button ButtonQueue::getButtons () const
+{
+        if (!queue.empty ()) {
+                auto tmp = queue.front ();
+                queue.pop_front ();
+                return tmp;
+        }
+
+        return Button::NONE;
+}
 
 } // namespace le

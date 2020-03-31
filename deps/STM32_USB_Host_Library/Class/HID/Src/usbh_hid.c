@@ -150,15 +150,15 @@ static USBH_StatusTypeDef USBH_HID_InterfaceInit (USBH_HandleTypeDef *phost)
 
         /*Decode Bootclass Protocol: Mouse or Keyboard*/
         if (phost->device.CfgDesc.Itf_Desc[phost->device.current_interface].bInterfaceProtocol == HID_KEYBRD_BOOT_CODE) {
-                USBH_UsrLog ("KeyBoard device found!");
+                USBH_UsrLog ("KeyBoard device found");
                 HID_Handle->Init = USBH_HID_KeybdInit;
         }
         else if (phost->device.CfgDesc.Itf_Desc[phost->device.current_interface].bInterfaceProtocol == HID_MOUSE_BOOT_CODE) {
-                USBH_UsrLog ("Mouse device found!");
+                USBH_UsrLog ("Mouse device found");
                 HID_Handle->Init = USBH_HID_MouseInit;
         }
         else if (phost->device.CfgDesc.Itf_Desc[phost->device.current_interface].bInterfaceProtocol == HID_SNES_GAMEPAD_CODE) {
-                USBH_UsrLog ("Gamepad found!");
+                USBH_UsrLog ("Gamepad found");
                 HID_Handle->Init = usbhHidGamepadInit;
         }
         else {
@@ -572,6 +572,9 @@ HID_TypeTypeDef USBH_HID_GetDeviceType (USBH_HandleTypeDef *phost)
                 }
                 else if (phost->device.CfgDesc.Itf_Desc[phost->device.current_interface].bInterfaceProtocol == HID_MOUSE_BOOT_CODE) {
                         type = HID_MOUSE;
+                }
+                else if (phost->device.CfgDesc.Itf_Desc[phost->device.current_interface].bInterfaceProtocol == HID_SNES_GAMEPAD_CODE) {
+                        type = HID_GAMEPAD;
                 }
         }
         return type;

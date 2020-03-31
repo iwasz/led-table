@@ -39,7 +39,6 @@ extern "C" {
 #include "usbh_hid_keybd.h"
 #include "usbh_hid_mouse.h"
 
-
 /** @addtogroup USBH_LIB
  * @{
  */
@@ -130,6 +129,7 @@ typedef enum {
 typedef enum {
         HID_MOUSE = 0x01,
         HID_KEYBOARD = 0x02,
+        HID_GAMEPAD = 0x03,
         HID_UNKNOWN = 0xFF,
 } HID_TypeTypeDef;
 

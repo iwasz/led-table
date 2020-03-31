@@ -12,10 +12,9 @@
 
 */
 
-#include <string.h>
-
-#include "stm32f4xx_hal.h"
 #include "ws2812b.h"
+#include "ErrorHandler.h"
+#include <string.h>
 
 WS2812_Struct ws2812b;
 
@@ -25,6 +24,8 @@ uint32_t WS2812_IO_Low[] = {WS2812B_PINS << 16};
 
 // WS2812 framebuffer - buffer for 2 LEDs - two times 24 bits
 uint16_t ws2812bDmaBitBuffer[24 * 2];
+
+static void ws2812b_set_pixel (uint8_t row, uint16_t column, uint8_t red, uint8_t green, uint8_t blue);
 
 // Gamma correction table
 const uint8_t gammaTable[]

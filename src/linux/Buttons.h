@@ -55,4 +55,16 @@ private:
         mutable Button currentButton;
 };
 
+class ButtonQueue {
+public:
+        void onPress ();
+        void onRelease ();
+
+        Button getButtons () const;
+        std::optional<Button> getButton () const { return getButtons (); }
+
+private:
+        mutable std::deque<Button> queue;
+};
+
 } // namespace le

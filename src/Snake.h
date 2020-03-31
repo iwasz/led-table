@@ -100,7 +100,7 @@ private:
 
 template <typename G, typename B> Game<G, B>::Game (G &graphics, B const &buttons) : graphics (graphics), buttons (buttons)
 {
-        auto screenDimension = graphics.getScreenDimension ();
+        // auto screenDimension = graphics.getScreenDimension ();
         generateApplesIfNecessary ();
 }
 
@@ -135,7 +135,7 @@ template <typename G, typename B> void Game<G, B>::run ()
 
         // Collision with apples
         if (auto i = std::find (apples.cbegin (), apples.cend (), head); i != apples.end ()) {
-                static int j = 0;
+                // static int j = 0;
                 // fmt::print ("Score : {}\n", ++j);
                 body.lenghten ();
                 apples.erase (i);

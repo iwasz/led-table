@@ -34,9 +34,10 @@ IF (DEFINED DEVICE)
 
     SET (SOURCES
         "src/stm32/Buttons.cc"    
-        "src/stm32/usb/Usb.cc"
+        "src/stm32/usb/UsbHidController.cc"
         "src/stm32/usb/usbh_conf.c"
-        "src/ws2812b/System.cc"
+        "src/stm32/System.cc"
+        "src/stm32/Logging.cc"
         "src/ws2812b/ws2812b.c"
 
         "${LIB_MICRO_ROOT}/src/ErrorHandler.c"
@@ -164,8 +165,10 @@ ELSE()
 
     INCLUDE_DIRECTORIES("src/linux")
 
-    add_definitions("-std=c++17" 
-                    "-DWITH_EMULATOR=1")
+    SET(CMAKE_C_FLAGS "-std=c11 -Wall -Werror=return-type" CACHE INTERNAL "c compiler flags")
+    SET(CMAKE_CXX_FLAGS "-std=c++17 -Wall -Werror=return-type -Wno-register" CACHE INTERNAL "cxx compiler flags")
+    
+    add_definitions("-DWITH_EMULATOR=1")
 
     SET (SOURCES
         "src/linux/Buttons.cc"

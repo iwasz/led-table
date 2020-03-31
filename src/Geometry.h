@@ -34,7 +34,11 @@ template <typename T> struct DimensionT {
         T h;
 };
 
+#ifdef WITH_EMULATOR
 using Dimension = DimensionT<float>;
+#else
+using Dimension = DimensionT<int>;
+#endif
 
 /**
  *

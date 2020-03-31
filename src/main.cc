@@ -27,54 +27,67 @@ int main ()
         using namespace le;
         using namespace le::system;
 
-        init ();
+        system::init ();
+        log::init ();
+        printf ("Led table is alive\r\n");
 
 #ifdef WITH_EMULATOR
         auto [winW, winH] = getWindow ().getSize ();
         auto pixW = winW / float (FrameBufferType::WIDTH);
         auto pixH = winH / float (FrameBufferType::HEIGHT);
 #else
-        int pixW = 0;
-        int pixH = 0;
+        // int pixW = 0;
+        // int pixH = 0;
 #endif
-        Timer timer{};
+        // Timer timer{};
 
         // tetrisConstructor ();
-        le::snake::Game snake{getGraphics (), getSingleButton ()};
+        // le::snake::Game snake{getGraphics (), getButtonQueue ()};
 
-        while (true) {
+        bool running = true;
+        while (running) {
 #ifdef WITH_EMULATOR
                 sf::Event event{};
 
                 while (getWindow ().pollEvent (event)) {
                         if (event.type == sf::Event::Closed) {
                                 getWindow ().close ();
+                                running = false;
+                                break;
                         }
-                        else if (event.type == sf::Event::KeyPressed) {
-                                // buttons.onPress ();
-                                getSingleButton ().onPress ();
+
+                        if (event.type == sf::Event::KeyPressed) {
+                                getButtonQueue ().onPress ();
+                                // getButtons ().onPress ();
+                                // getSingleButton ().onPress ();
                         }
                         else if (event.type == sf::Event::KeyReleased) {
-                                // buttons.onRelease ();
-                                getSingleButton ().onRelease ();
+                                getButtonQueue ().onRelease ();
+                                // getButtons ().onRelease ();
+                                // getSingleButton ().onRelease ();
                         }
                 }
 #else
                 getUsb ().run ();
+                auto b = getButtonFromUsb (getUsb ());
+
+                if (b) {
+                        printButtons (*b);
+                }
 #endif
 
-                if (!timer.isExpired ()) {
-                        continue;
-                }
+                // if (!timer.isExpired ()) {
+                //         continue;
+                // }
 
-                timer.start (FRAME_DURATION_MS);
+                // timer.start (FRAME_DURATION_MS);
 
 #ifdef WITH_EMULATOR
                 getWindow ().clear ();
 #endif
 
-                snake.run ();
-                le::fb::display (getFrameBuffer (), getWindow (), {pixW, pixH});
+                // snake.run ();
+                // le::fb::display (getFrameBuffer (), getWindow (), {pixW, pixH});
 
 #ifdef WITH_EMULATOR
                 getWindow ().display ();
