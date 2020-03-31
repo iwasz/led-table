@@ -35,9 +35,6 @@ int main ()
         auto [winW, winH] = getWindow ().getSize ();
         auto pixW = winW / float (FrameBufferType::WIDTH);
         auto pixH = winH / float (FrameBufferType::HEIGHT);
-#else
-        int pixW = 0;
-        int pixH = 0;
 #endif
         // Timer timer{};
 
@@ -90,7 +87,7 @@ int main ()
 #endif
 
                 snake.run ();
-                le::fb::display (getFrameBuffer (), getWindow (), {pixW, pixH});
+                getFrameBuffer ().display ();
 
 #ifdef WITH_EMULATOR
                 getWindow ().display ();

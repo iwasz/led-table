@@ -18,6 +18,7 @@
 namespace le::usb {
 
 enum class Type {
+        UNKNOWN = 0x00,
         MOUSE = 0x01,
         KEYBOARD = 0x02,
         GAMEPAD = 0x03,

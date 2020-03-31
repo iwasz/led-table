@@ -130,11 +130,29 @@ void UsbHidController::run ()
 
 /****************************************************************************/
 
-Type UsbHidController::getType () const { return currentType; }
+Type UsbHidController::getType () const
+{ // return currentType;
+
+        switch (USBH_HID_GetDeviceType (&hUSBHost)) {
+        case HID_TypeTypeDef::HID_KEYBOARD:
+                return Type::KEYBOARD;
+        case HID_TypeTypeDef::HID_MOUSE:
+                return Type::MOUSE;
+        case HID_TypeTypeDef::HID_GAMEPAD:
+                return Type::GAMEPAD;
+        default:
+                return Type::UNKNOWN;
+        }
+}
 
 /****************************************************************************/
 
-bool UsbHidController::isReady () const { return ready; }
+bool UsbHidController::isReady () const
+{
+        // return ready;
+        auto *hidHandle = reinterpret_cast<HID_HandleTypeDef *> (hUSBHost.pActiveClass->pData);
+        return hidHandle->state != HID_INIT;
+}
 
 /****************************************************************************/
 
@@ -146,21 +164,22 @@ extern "C" void OTG_FS_IRQHandler (void) { HAL_HCD_IRQHandler (&hhcd); }
 extern "C" void usbhUserProcess (USBH_HandleTypeDef *pHost, uint8_t id)
 {
         switch (id) {
-        case HOST_USER_CLASS_SELECTED: {
-                ready = true;
-                HID_TypeTypeDef hidType = HID_UNKNOWN;
+        case HOST_USER_CLASS_SELECTED: //{
+                                       //         ready = true;
+                                       //         HID_TypeTypeDef hidType = HID_UNKNOWN;
 
-                if (pHost->device.CfgDesc.Itf_Desc[pHost->device.current_interface].bInterfaceProtocol == HID_KEYBRD_BOOT_CODE) {
-                        currentType = Type::KEYBOARD;
-                }
-                else if (pHost->device.CfgDesc.Itf_Desc[pHost->device.current_interface].bInterfaceProtocol == HID_MOUSE_BOOT_CODE) {
-                        currentType = Type::MOUSE;
-                }
-                else if (pHost->device.CfgDesc.Itf_Desc[pHost->device.current_interface].bInterfaceProtocol == HID_SNES_GAMEPAD_CODE) {
-                        currentType = Type::GAMEPAD;
-                }
+                //         if (pHost->device.CfgDesc.Itf_Desc[pHost->device.current_interface].bInterfaceProtocol == HID_KEYBRD_BOOT_CODE) {
+                //                 currentType = Type::KEYBOARD;
+                //         }
+                //         else if (pHost->device.CfgDesc.Itf_Desc[pHost->device.current_interface].bInterfaceProtocol == HID_MOUSE_BOOT_CODE) {
+                //                 currentType = Type::MOUSE;
+                //         }
+                //         else if (pHost->device.CfgDesc.Itf_Desc[pHost->device.current_interface].bInterfaceProtocol == HID_SNES_GAMEPAD_CODE)
+                //         {
+                //                 currentType = Type::GAMEPAD;
+                //         }
 
-        } break;
+                // } break;
 
         case HOST_USER_DISCONNECTION:
                 ready = false;
