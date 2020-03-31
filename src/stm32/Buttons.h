@@ -34,6 +34,7 @@ enum class Button : unsigned int {
 
 inline le::Button operator| (le::Button l, le::Button r) { return static_cast<Button> (static_cast<unsigned> (l) | static_cast<unsigned> (r)); }
 inline le::Button operator& (le::Button l, le::Button r) { return static_cast<Button> (static_cast<unsigned> (l) & static_cast<unsigned> (r)); }
+inline le::Button operator^ (le::Button l, le::Button r) { return static_cast<Button> (static_cast<unsigned> (l) ^ static_cast<unsigned> (r)); }
 inline le::Button operator~ (le::Button r) { return static_cast<Button> (~static_cast<unsigned> (r)); }
 inline le::Button &operator|= (le::Button &l, le::Button r)
 {
@@ -155,47 +156,73 @@ template <typename Impl> class ButtonQueue {
 public:
         ButtonQueue (Impl &usb) : usb{usb} {}
 
-        void onPress ();
-        void onRelease ();
+        void onPress (Button b);
+        void onRelease (Button b);
+        void run ();
 
         Button getButtons () const;
         std::optional<Button> getButton () const { return getButtons (); }
 
 private:
+        void check (Button diff, Button current, Button button);
+
+private:
         mutable etl::deque<Button, 4> queue;
         Impl &usb;
+        Button prevState{};
 };
 
 /****************************************************************************/
 
-template <typename Impl> void ButtonQueue<Impl>::onPress ()
+template <typename Impl> void ButtonQueue<Impl>::run ()
 {
-        Button currentButton{};
+        auto current = getButtonFromUsb (usb);
 
-        // if (sf::Keyboard::isKeyPressed (sf::Keyboard::Q)) {
-        //         currentButton = Button::Q;
-        // }
-        // else if (sf::Keyboard::isKeyPressed (sf::Keyboard::W)) {
-        //         currentButton = Button::W;
-        // }
-        // else if (sf::Keyboard::isKeyPressed (sf::Keyboard::A)) {
-        //         currentButton = Button::A;
-        // }
-        // else if (sf::Keyboard::isKeyPressed (sf::Keyboard::S)) {
-        //         currentButton = Button::S;
-        // }
-        // else if (sf::Keyboard::isKeyPressed (sf::Keyboard::D)) {
-        //         currentButton = Button::D;
-        // }
+        if (!current || *current == prevState) {
+                return;
+        }
 
-        if (queue.size () < 4) {
-                queue.push_back (currentButton);
+        Button diff = *current ^ prevState;
+        check (diff, *current, Button::Q);
+        check (diff, *current, Button::W);
+        check (diff, *current, Button::A);
+        check (diff, *current, Button::S);
+        check (diff, *current, Button::D);
+        check (diff, *current, Button::Z);
+        check (diff, *current, Button::X);
+        check (diff, *current, Button::I);
+        check (diff, *current, Button::J);
+        check (diff, *current, Button::K);
+        check (diff, *current, Button::L);
+        check (diff, *current, Button::O);
+}
+
+/****************************************************************************/
+
+template <typename Impl> void ButtonQueue<Impl>::check (Button diff, Button current, Button button)
+{
+        if ((diff & button) == button) {
+                if ((current & button) == button) {
+                        onPress (button);
+                }
+                else {
+                        onRelease (button);
+                }
         }
 }
 
 /****************************************************************************/
 
-template <typename Impl> void ButtonQueue<Impl>::onRelease () {}
+template <typename Impl> void ButtonQueue<Impl>::onPress (Button b)
+{
+        if (queue.size () < 4) {
+                queue.push_back (b);
+        }
+}
+
+/****************************************************************************/
+
+template <typename Impl> void ButtonQueue<Impl>::onRelease (Button b) {}
 
 /****************************************************************************/
 

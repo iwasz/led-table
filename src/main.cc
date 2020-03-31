@@ -36,13 +36,13 @@ int main ()
         auto pixW = winW / float (FrameBufferType::WIDTH);
         auto pixH = winH / float (FrameBufferType::HEIGHT);
 #else
-        // int pixW = 0;
-        // int pixH = 0;
+        int pixW = 0;
+        int pixH = 0;
 #endif
         // Timer timer{};
 
         // tetrisConstructor ();
-        // le::snake::Game snake{getGraphics (), getButtonQueue ()};
+        le::snake::Game snake{getGraphics (), getButtonQueue ()};
 
         bool running = true;
         while (running) {
@@ -69,11 +69,14 @@ int main ()
                 }
 #else
                 getUsb ().run ();
-                auto b = getButtonFromUsb (getUsb ());
+                getButtonQueue ().run ();
+                // printButtons (getButtonQueue ().getButtons ());
 
-                if (b) {
-                        printButtons (*b);
-                }
+                // auto b = getButtonFromUsb (getUsb ());
+
+                // if (b) {
+                //         printButtons (*b);
+                // }
 #endif
 
                 // if (!timer.isExpired ()) {
@@ -86,8 +89,8 @@ int main ()
                 getWindow ().clear ();
 #endif
 
-                // snake.run ();
-                // le::fb::display (getFrameBuffer (), getWindow (), {pixW, pixH});
+                snake.run ();
+                le::fb::display (getFrameBuffer (), getWindow (), {pixW, pixH});
 
 #ifdef WITH_EMULATOR
                 getWindow ().display ();
