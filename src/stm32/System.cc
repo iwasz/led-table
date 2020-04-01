@@ -48,12 +48,12 @@ void SystemClock_Config (void)
         RCC_OscInitStruct.PLL.PLLQ = 3;
         RCC_OscInitStruct.PLL.PLLR = 2;
         if (HAL_RCC_OscConfig (&RCC_OscInitStruct) != HAL_OK) {
-                Error_Handler ();
+                Error_Handler (UNKNOWN);
         }
         /**Activate the Over-Drive mode
          */
         if (HAL_PWREx_EnableOverDrive () != HAL_OK) {
-                Error_Handler ();
+                Error_Handler (UNKNOWN);
         }
         /**Initializes the CPU, AHB and APB busses clocks
          */
@@ -64,7 +64,7 @@ void SystemClock_Config (void)
         RCC_ClkInitStruct.APB2CLKDivider = RCC_HCLK_DIV2;
 
         if (HAL_RCC_ClockConfig (&RCC_ClkInitStruct, FLASH_LATENCY_5) != HAL_OK) {
-                Error_Handler ();
+                Error_Handler (UNKNOWN);
         }
         PeriphClkInitStruct.PeriphClockSelection = RCC_PERIPHCLK_CLK48;
         PeriphClkInitStruct.PLLSAI.PLLSAIM = 4;
@@ -75,7 +75,7 @@ void SystemClock_Config (void)
         PeriphClkInitStruct.Clk48ClockSelection = RCC_CLK48CLKSOURCE_PLLSAIP;
 
         if (HAL_RCCEx_PeriphCLKConfig (&PeriphClkInitStruct) != HAL_OK) {
-                Error_Handler ();
+                Error_Handler (UNKNOWN);
         }
 }
 

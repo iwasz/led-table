@@ -95,7 +95,7 @@ static void TIM1_init (void)
         TIM1_handle.Init.CounterMode = TIM_COUNTERMODE_UP;
 
         if (HAL_TIM_PWM_Init (&TIM1_handle) != HAL_OK) {
-                Error_Handler ();
+                Error_Handler (0);
         }
 
         HAL_NVIC_SetPriority (TIM1_UP_TIM10_IRQn, 0, 0);
@@ -108,7 +108,7 @@ static void TIM1_init (void)
         tim2OC1.OCFastMode = TIM_OCFAST_DISABLE;
 
         if (HAL_TIM_PWM_ConfigChannel (&TIM1_handle, &tim2OC1, TIM_CHANNEL_1) != HAL_OK) {
-                Error_Handler ();
+                Error_Handler (0);
         }
 
         tim2OC2.OCMode = TIM_OCMODE_PWM1;
@@ -120,15 +120,15 @@ static void TIM1_init (void)
         tim2OC2.OCNIdleState = TIM_OCNIDLESTATE_RESET;
 
         if (HAL_TIM_PWM_ConfigChannel (&TIM1_handle, &tim2OC2, TIM_CHANNEL_2) != HAL_OK) {
-                Error_Handler ();
+                Error_Handler (0);
         }
 
         if (HAL_TIM_Base_Start (&TIM1_handle) != HAL_OK) {
-                Error_Handler ();
+                Error_Handler (0);
         }
 
         if (HAL_TIM_PWM_Start (&TIM1_handle, TIM_CHANNEL_1) != HAL_OK) {
-                Error_Handler ();
+                Error_Handler (0);
         }
 
         __HAL_TIM_DISABLE (&TIM1_handle);
@@ -166,17 +166,17 @@ static void DMA2_init (void)
         // dmaUpdate.XferErrorCallback = TransferError;
 
         if (HAL_DMA_DeInit (&dmaUpdate) != HAL_OK) {
-                Error_Handler ();
+                Error_Handler (0);
         }
 
         if (HAL_DMA_Init (&dmaUpdate) != HAL_OK) {
-                Error_Handler ();
+                Error_Handler (0);
         }
 
         // HAL_NVIC_SetPriority(DMA1_Channel2_IRQn, 0, 0);
         // HAL_NVIC_EnableIRQ(DMA1_Channel2_IRQn);
         if (HAL_DMA_Start (&dmaUpdate, (uint32_t)WS2812_IO_High, (uint32_t) (&WS2812B_PORT->BSRR), BUFFER_SIZE) != HAL_OK) {
-                Error_Handler ();
+                Error_Handler (0);
         }
         // HAL_DMA_Start(&dmaUpdate, (uint32_t)WS2812_IO_High, (uint32_t)&dummy, BUFFER_SIZE);
 
@@ -202,15 +202,15 @@ static void DMA2_init (void)
         // HAL_NVIC_SetPriority(DMA1_Channel5_IRQn, 0, 0);
         // HAL_NVIC_EnableIRQ(DMA1_Channel5_IRQn);
         if (HAL_DMA_DeInit (&dmaCC1) != HAL_OK) {
-                Error_Handler ();
+                Error_Handler (0);
         }
 
         if (HAL_DMA_Init (&dmaCC1) != HAL_OK) {
-                Error_Handler ();
+                Error_Handler (0);
         }
 
         if (HAL_DMA_Start (&dmaCC1, (uint32_t)ws2812bDmaBitBuffer, (uint32_t) (&WS2812B_PORT->BSRR) + 2, BUFFER_SIZE) != HAL_OK) {
-                Error_Handler ();
+                Error_Handler (0);
         } // BRR
 
         // HAL_DMA_Start(&dmaCC1, (uint32_t)ws2812bDmaBitBuffer, (uint32_t)&dummy, BUFFER_SIZE); //BRR
@@ -237,18 +237,18 @@ static void DMA2_init (void)
         dmaCC2.XferErrorCallback = DMA_TransferError;
 
         if (HAL_DMA_DeInit (&dmaCC2) != HAL_OK) {
-                Error_Handler ();
+                Error_Handler (0);
         }
 
         if (HAL_DMA_Init (&dmaCC2) != HAL_OK) {
-                Error_Handler ();
+                Error_Handler (0);
         }
 
         HAL_NVIC_SetPriority (DMA2_Stream2_IRQn, 0, 0);
         HAL_NVIC_EnableIRQ (DMA2_Stream2_IRQn);
 
         if (HAL_DMA_Start_IT (&dmaCC2, (uint32_t)WS2812_IO_Low, (uint32_t)&WS2812B_PORT->BSRR, BUFFER_SIZE) != HAL_OK) {
-                Error_Handler ();
+                Error_Handler (0);
         }
 
         // HAL_DMA_Start_IT(&dmaCC2, (uint32_t)WS2812_IO_Low, (uint32_t)&dummy, BUFFER_SIZE);

@@ -30,7 +30,8 @@ IF (DEFINED DEVICE)
     INCLUDE_DIRECTORIES("src/stm32/usb")
     
     add_definitions("-DUSE_USB_FS=1" 
-                    "-DWITH_FIRMWARE=1")
+                    "-DWITH_FIRMWARE=1"
+                    )
 
     SET (SOURCES
         "src/stm32/Buttons.cc"    
