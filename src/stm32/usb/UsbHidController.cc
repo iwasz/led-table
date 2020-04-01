@@ -11,8 +11,8 @@
 
 namespace le::usb {
 
-static bool ready{};
-static Type currentType{};
+// static bool ready{};
+// static Type currentType{};
 extern "C" void usbhUserProcess (USBH_HandleTypeDef * /* pHost */, uint8_t id);
 
 /****************************************************************************/
@@ -161,30 +161,11 @@ extern "C" void OTG_FS_IRQHandler (void) { HAL_HCD_IRQHandler (&hhcd); }
 
 /****************************************************************************/
 
-extern "C" void usbhUserProcess (USBH_HandleTypeDef *pHost, uint8_t id)
+extern "C" void usbhUserProcess (USBH_HandleTypeDef * /* pHost */, uint8_t id)
 {
         switch (id) {
-        case HOST_USER_CLASS_SELECTED: //{
-                                       //         ready = true;
-                                       //         HID_TypeTypeDef hidType = HID_UNKNOWN;
-
-                //         if (pHost->device.CfgDesc.Itf_Desc[pHost->device.current_interface].bInterfaceProtocol == HID_KEYBRD_BOOT_CODE) {
-                //                 currentType = Type::KEYBOARD;
-                //         }
-                //         else if (pHost->device.CfgDesc.Itf_Desc[pHost->device.current_interface].bInterfaceProtocol == HID_MOUSE_BOOT_CODE) {
-                //                 currentType = Type::MOUSE;
-                //         }
-                //         else if (pHost->device.CfgDesc.Itf_Desc[pHost->device.current_interface].bInterfaceProtocol == HID_SNES_GAMEPAD_CODE)
-                //         {
-                //                 currentType = Type::GAMEPAD;
-                //         }
-
-                // } break;
-
+        case HOST_USER_CLASS_SELECTED:
         case HOST_USER_DISCONNECTION:
-                ready = false;
-                break;
-
         case HOST_USER_SELECT_CONFIGURATION:
         case HOST_USER_CLASS_ACTIVE:
         case HOST_USER_CONNECTION:

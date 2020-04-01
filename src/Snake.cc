@@ -106,19 +106,19 @@ std::optional<Heading> buttonsToHeading (le::Button b)
         std::optional<Heading> heading{};
 
         switch (b) {
-        case Button::W:
+        case Button::I:
                 heading = Heading::UP;
                 break;
 
-        case Button::S:
+        case Button::K:
                 heading = Heading::DOWN;
                 break;
 
-        case Button::A:
+        case Button::J:
                 heading = Heading::LEFT;
                 break;
 
-        case Button::D:
+        case Button::L:
                 heading = Heading::RIGHT;
                 break;
 

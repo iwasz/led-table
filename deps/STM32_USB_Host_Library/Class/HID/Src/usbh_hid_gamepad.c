@@ -37,28 +37,6 @@ USBH_StatusTypeDef usbhHidGamepadInit (USBH_HandleTypeDef *phost)
         return USBH_OK;
 }
 
-// USBH_StatusTypeDef USBH_HID_KeybdInit (USBH_HandleTypeDef *phost)
-// {
-//         uint32_t x;
-//         HID_HandleTypeDef *HID_Handle = (HID_HandleTypeDef *)phost->pActiveClass->pData;
-
-//         keybd_info.lctrl = keybd_info.lshift = 0;
-//         keybd_info.lalt = keybd_info.lgui = 0;
-//         keybd_info.rctrl = keybd_info.rshift = 0;
-//         keybd_info.ralt = keybd_info.rgui = 0;
-
-//         for (x = 0; x < (sizeof (keybd_report_data) / sizeof (uint32_t)); x++) {
-//                 keybd_report_data[x] = 0;
-//         }
-
-//         if (HID_Handle->length > (sizeof (keybd_report_data) / sizeof (uint32_t))) {
-//                 HID_Handle->length = (sizeof (keybd_report_data) / sizeof (uint32_t));
-//         }
-//         HID_Handle->pData = (uint8_t *)keybd_report_data;
-//         fifo_init (&HID_Handle->fifo, phost->device.Data, HID_QUEUE_SIZE * sizeof (keybd_report_data));
-
-//         return USBH_OK;
-// }
 /****************************************************************************/
 
 HidGamepadInfo *usbhHidGetGamepadInfo (USBH_HandleTypeDef *phost)
@@ -69,12 +47,24 @@ HidGamepadInfo *usbhHidGetGamepadInfo (USBH_HandleTypeDef *phost)
                 return NULL;
         }
 
+        static int lastX, lastY;
+
         if (fifo_read (&HID_Handle->fifo, &gamepad_report_data, HID_Handle->length) == HID_Handle->length) {
                 gamepadInfo.x = ((int16_t)gamepad_report_data[HORIZONTAL_AXIS_OFFSET]) - 127;
                 gamepadInfo.y = ((int16_t)gamepad_report_data[VERTICAL_AXIS_OFFSET]) - 127;
                 gamepadInfo.buttons = *(uint16_t *)&gamepad_report_data[BUTTON_BANK1_OFFSET];
                 return &gamepadInfo;
         }
+
+        // if (gamepadInfo.x != lastX) {
+        //         printf ("X:%d ", gamepadInfo.x);
+        // }
+        // if (gamepadInfo.y != lastY) {
+        //         printf ("Y:%d ", gamepadInfo.y);
+        // }
+
+        // lastX = gamepadInfo.x;
+        // lastY = gamepadInfo.y;
 
         return NULL;
 }

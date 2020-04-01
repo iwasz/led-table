@@ -169,7 +169,7 @@ private:
 private:
         mutable etl::deque<Button, 4> queue;
         Impl &usb;
-        Button prevState{};
+        Button previous{};
 };
 
 /****************************************************************************/
@@ -178,11 +178,13 @@ template <typename Impl> void ButtonQueue<Impl>::run ()
 {
         auto current = getButtonFromUsb (usb);
 
-        if (!current || *current == prevState) {
+        if (!current || *current == previous) {
                 return;
         }
 
-        Button diff = *current ^ prevState;
+        printButtons (*current);
+
+        Button diff = *current ^ previous;
         check (diff, *current, Button::Q);
         check (diff, *current, Button::W);
         check (diff, *current, Button::A);
@@ -195,6 +197,7 @@ template <typename Impl> void ButtonQueue<Impl>::run ()
         check (diff, *current, Button::K);
         check (diff, *current, Button::L);
         check (diff, *current, Button::O);
+        previous = *current;
 }
 
 /****************************************************************************/
@@ -215,6 +218,9 @@ template <typename Impl> void ButtonQueue<Impl>::check (Button diff, Button curr
 
 template <typename Impl> void ButtonQueue<Impl>::onPress (Button b)
 {
+        // printf ("Pr ");
+        // printButtons (b);
+
         if (queue.size () < 4) {
                 queue.push_back (b);
         }
@@ -222,7 +228,11 @@ template <typename Impl> void ButtonQueue<Impl>::onPress (Button b)
 
 /****************************************************************************/
 
-template <typename Impl> void ButtonQueue<Impl>::onRelease (Button b) {}
+template <typename Impl> void ButtonQueue<Impl>::onRelease (Button b)
+{
+        // printf ("Rl ");
+        // printButtons (b);
+}
 
 /****************************************************************************/
 

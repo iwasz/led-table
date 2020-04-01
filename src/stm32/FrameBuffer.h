@@ -93,10 +93,11 @@ template <int W, int H> void FrameBuffer<W, H>::postProcessBuffer ()
                 for (int x = 0; x < W; ++x) {
                         for (int color = 0; color < 3; ++color) {
                                 if (y % 2 == 0) {
-                                        flipped.at ((W * y + x) * BYTES_PER_PIXEL + color) = data.at ((W * y + x) * BYTES_PER_PIXEL + color);
+                                        flipped.at ((PIXEL_COUNT - 1 - (W * y + x)) * BYTES_PER_PIXEL + color)
+                                                = data.at ((W * y + x) * BYTES_PER_PIXEL + color);
                                 }
                                 else {
-                                        flipped.at ((W * y + x) * BYTES_PER_PIXEL + color)
+                                        flipped.at ((PIXEL_COUNT - 1 - (W * y + x)) * BYTES_PER_PIXEL + color)
                                                 = data.at ((W * (y + 1) - x - 1) * BYTES_PER_PIXEL + color);
                                 }
                         }
@@ -114,9 +115,8 @@ template <int W, int H> void FrameBuffer<W, H>::postProcessBuffer ()
  */
 template <int W, int H> void FrameBuffer<W, H>::display ()
 {
-        postProcessBuffer ();
-
-        if (ws2812b.transferComplete) {
+        if (ws2812b.transferComplete != 0) {
+                postProcessBuffer ();
                 ws2812b.startTransfer = 1;
                 ws2812b_handle ();
         }

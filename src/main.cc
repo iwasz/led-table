@@ -67,7 +67,6 @@ int main ()
 #else
                 getUsb ().run ();
                 getButtonQueue ().run ();
-                // printButtons (getButtonQueue ().getButtons ());
 
                 // auto b = getButtonFromUsb (getUsb ());
 
@@ -75,12 +74,6 @@ int main ()
                 //         printButtons (*b);
                 // }
 #endif
-
-                // if (!timer.isExpired ()) {
-                //         continue;
-                // }
-
-                // timer.start (FRAME_DURATION_MS);
 
 #ifdef WITH_EMULATOR
                 getWindow ().clear ();
