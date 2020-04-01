@@ -85,7 +85,7 @@ private:
         }
 
 private:
-        static constexpr int LOOP_FREQ{100};
+        static constexpr int LOOP_FREQ{200};
         static constexpr Point ENTRY_POINT{0, HEIGHT / 2};
 
         Body body{ENTRY_POINT, INITIAL_LEN};

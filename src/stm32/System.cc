@@ -11,6 +11,17 @@
 #include "Gpio.h"
 #include "Hal.h"
 
+extern "C" {
+#include "umm_malloc_cfg.h"
+//
+#include <umm_malloc.h>
+
+void *malloc (size_t size) { return umm_malloc (size); }
+void *calloc (size_t num, size_t size) { return umm_calloc (num, size); }
+void *realloc (void *ptr, size_t size) { return umm_realloc (ptr, size); }
+void free (void *ptr) { umm_free (ptr); }
+}
+
 namespace le::system {
 
 /****************************************************************************/

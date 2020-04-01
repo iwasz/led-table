@@ -182,7 +182,7 @@ template <typename Impl> void ButtonQueue<Impl>::run ()
                 return;
         }
 
-        printButtons (*current);
+        // printButtons (*current);
 
         Button diff = *current ^ previous;
         check (diff, *current, Button::Q);

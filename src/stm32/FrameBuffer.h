@@ -30,7 +30,7 @@ public:
         static constexpr int HEIGHT = W;
         static constexpr int PIXEL_COUNT = WIDTH * HEIGHT;
         static constexpr int BYTES_PER_PIXEL = 3;
-        static constexpr int FRAME_BUFFER_SIZEOF = PIXEL_COUNT * BYTES_PER_PIXEL;
+        // static constexpr int FRAME_BUFFER_SIZEOF = PIXEL_COUNT ;
 
         FrameBuffer ();
         FrameBuffer (FrameBuffer const &) = delete;
@@ -44,21 +44,25 @@ public:
                 std::generate (data.begin (), data.end (), [] () { return std::rand () % 256; });
         }
 
-        Color get (Point const &p) const
+        Color const &get (Point const &p) const
         {
-                gsl::index px = (p.y * WIDTH + p.x) * BYTES_PER_PIXEL;
-                return Color{data.at (px + 2), data.at (px + 1), data.at (px)};
+                gsl::index px = (p.y * WIDTH + p.x);
+                return data.at (px);
+        }
+
+        Color &get (Point const &p)
+        {
+                gsl::index px = (p.y * WIDTH + p.x);
+                return data.at (px);
         }
 
         void set (Point const &p, Color const &c)
         {
-                size_t px = (p.y * WIDTH + p.x) * BYTES_PER_PIXEL;
-                data.at (px) = c.r;
-                data.at (px + 1) = c.g;
-                data.at (px + 2) = c.b;
+                size_t px = (p.y * WIDTH + p.x);
+                data.at (px) = c;
         }
 
-        void clear () { std::fill (data.begin (), data.end (), 0); }
+        void clear () { std::fill (data.begin (), data.end (), Color{}); }
 
         /// Flips every odd line while copying from data to flipped. Remember, that 0 is even.
         void postProcessBuffer ();
@@ -67,8 +71,8 @@ public:
 
 private:
         /// Row after row. TODO Why not array of Colors?
-        std::array<uint8_t, FRAME_BUFFER_SIZEOF> data{};
-        std::array<uint8_t, FRAME_BUFFER_SIZEOF> flipped{};
+        std::array<Color, PIXEL_COUNT> data{};
+        std::array<Color, PIXEL_COUNT> flipped{};
 };
 
 /****************************************************************************/
@@ -78,7 +82,7 @@ template <int W, int H> FrameBuffer<W, H>::FrameBuffer ()
         // Set output channel/pin, GPIO_PIN_0 = 0, for GPIO_PIN_5 = 5 - this has to correspond to WS2812B_PINS
         ws2812b.item[0].channel = 0;
         // Your RGB framebuffer
-        ws2812b.item[0].frameBufferPointer = flipped.data ();
+        ws2812b.item[0].frameBufferPointer = reinterpret_cast<uint8_t *> (flipped.data ());
         // RAW size of framebuffer
         ws2812b.item[0].frameBufferSize = flipped.size ();
 
@@ -89,22 +93,13 @@ template <int W, int H> FrameBuffer<W, H>::FrameBuffer ()
 
 template <int W, int H> void FrameBuffer<W, H>::postProcessBuffer ()
 {
-        for (int y = 0; y < H; ++y) {
-                for (int x = 0; x < W; ++x) {
-                        for (int color = 0; color < 3; ++color) {
-                                if (y % 2 == 0) {
-                                        flipped.at ((PIXEL_COUNT - 1 - (W * y + x)) * BYTES_PER_PIXEL + color)
-                                                = data.at ((W * y + x) * BYTES_PER_PIXEL + color);
-                                }
-                                else {
-                                        flipped.at ((PIXEL_COUNT - 1 - (W * y + x)) * BYTES_PER_PIXEL + color)
-                                                = data.at ((W * (y + 1) - x - 1) * BYTES_PER_PIXEL + color);
-                                }
-                        }
+        for (int yi = 0; yi < H; ++yi) {
+                for (int xi = 0; xi < W; ++xi) {
+                        int yo = H - 1 - yi; // Output row number.
+                        int xo = (yi % 2 == 1) ? (W - 1 - xi) : (xi);
+                        flipped.at (W * yo + xo) = get ({xi, yi});
                 }
         }
-
-        // std::copy (data.cbegin (), data.cend (), flipped.begin ());
 }
 
 /**

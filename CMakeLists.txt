@@ -49,12 +49,10 @@ IF (DEFINED DEVICE)
         "${LIB_MICRO_ROOT}/src/UsartF4.cc"
         "${LIB_MICRO_ROOT}/src/Pwm.cc"
 
-    #    "${UMM_MALLOC_ROOT}/src/umm_info.c"
-    #    "${UMM_MALLOC_ROOT}/src/umm_integrity.c"
-    #    "${UMM_MALLOC_ROOT}/src/umm_malloc.c"
-    #    "src/umm_malloc_cfg.h"
-    #    "${UMM_MALLOC_ROOT}/src/umm_malloc.h"
-    #    "${UMM_MALLOC_ROOT}/src/umm_poison.c"
+       "${UMM_MALLOC_ROOT}/src/umm_info.c"
+       "${UMM_MALLOC_ROOT}/src/umm_integrity.c"
+       "${UMM_MALLOC_ROOT}/src/umm_malloc.c"
+       "${UMM_MALLOC_ROOT}/src/umm_poison.c"
 
         "${STARTUP_CODE}"
         "src/stm32/stm32f4xx_it.c"
