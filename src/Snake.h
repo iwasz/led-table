@@ -57,7 +57,7 @@ template <typename G, typename B> class Game : public IGame {
 public:
         static constexpr int WIDTH = G::WIDTH;
         static constexpr int HEIGHT = G::HEIGHT;
-        static constexpr int INITIAL_LEN = 3;
+        static constexpr int INITIAL_LEN = 23;
 
         explicit Game (G &graphics, B const &buttons);
 
@@ -85,7 +85,7 @@ private:
         }
 
 private:
-        static constexpr int LOOP_FREQ{200};
+        static constexpr int LOOP_FREQ{100};
         static constexpr Point ENTRY_POINT{0, HEIGHT / 2};
 
         Body body{ENTRY_POINT, INITIAL_LEN};

@@ -19,6 +19,8 @@ ninja
 Dependencies are:
 * SFML
 
+![alt text](https://github.com/iwasz/led-table/blob/master/emulator.png)
+
 # To compile the firmware
 ## Modify a file
 Unfortunately you have to modify the ```deps/umm_malloc/src/umm_malloc_cfg.h``` file. This should be at the beginning (replacing old macros):
