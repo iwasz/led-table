@@ -7,17 +7,27 @@
  ****************************************************************************/
 
 #pragma once
-// #include <SFML/Graphics.hpp>
-#include <cstdint>
+#include "Buttons.h"
+#include "Timer.h"
+#include <SFML/Graphics.hpp>
+#include <deque>
+#include <optional>
 
 namespace le {
 
-struct Color {
-        uint8_t r{};
-        uint8_t g{};
-        uint8_t b{};
+class ButtonQueue {
+public:
+        void run ();
 
-        // operator ::sf::Color () const { return {r, g, b}; }
+        Button getButtons () const;
+        std::optional<Button> getButton () const { return getButtons (); }
+
+private:
+        void onPress ();
+        void onRelease ();
+
+private:
+        mutable std::deque<Button> queue;
 };
 
 } // namespace le

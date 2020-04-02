@@ -21,7 +21,7 @@ Dependencies are:
 
 # To compile the firmware
 ## Modify a file
-Unfortunately you have to modify the ```deps/umm_malloc/src/umm_malloc_cfg.h``` file. This should be at the beginning (replacing the old macros):
+Unfortunately you have to modify the ```deps/umm_malloc/src/umm_malloc_cfg.h``` file. This should be at the beginning (replacing old macros):
 
 ```cpp
 extern char _end;

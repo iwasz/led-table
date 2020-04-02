@@ -7,19 +7,19 @@
  ****************************************************************************/
 
 #pragma once
-#include "Buttons.h"
+#include "Control.h"
 #include "FrameBuffer.h"
 #include "GenericGraphics.h"
 #include "Ncurses.h"
 #include "System.hh"
 
 namespace le {
-using FrameBufferType = le::fb::FrameBuffer<32, 32>;
+using FrameBufferType = le::fb::FrameBuffer<32, 32, std::remove_reference_t<decltype (system::getWindow ())>>;
 using NcursesStateType = le::nc::NcursesState<FrameBufferType>;
 
 auto &getFrameBuffer ()
 {
-        static FrameBufferType fb;
+        static FrameBufferType fb{system::getWindow ()};
         return fb;
 }
 
@@ -33,18 +33,6 @@ auto &getGraphics ()
 {
         static le::GenericGraphics graphics{getFrameBuffer ()};
         return graphics;
-}
-
-auto &getButtons ()
-{
-        static le::Buttons buttons;
-        return buttons;
-}
-
-auto &getSingleButton ()
-{
-        static le::SingleButton singleButton;
-        return singleButton;
 }
 
 auto &getButtonQueue ()

@@ -18,9 +18,13 @@ inline auto &getUsb ()
         return usb;
 }
 
-inline int &getWindow ()
+struct FakeWindow {
+        static constexpr bool isOpen () { return true; }
+};
+
+inline FakeWindow &getWindow ()
 {
-        static int i{};
+        static FakeWindow i{};
         return i;
 }
 

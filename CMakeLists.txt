@@ -34,7 +34,7 @@ IF (DEFINED DEVICE)
                     )
 
     SET (SOURCES
-        "src/stm32/Buttons.cc"    
+        "src/stm32/Control.cc"    
         "src/stm32/usb/UsbHidController.cc"
         "src/stm32/usb/usbh_conf.c"
         "src/stm32/System.cc"
@@ -170,7 +170,7 @@ ELSE()
     add_definitions("-DWITH_EMULATOR=1")
 
     SET (SOURCES
-        "src/linux/Buttons.cc"
+        "src/linux/Control.cc"
         "src/linux/Timer.cc"
         "src/linux/System.cc"
     )

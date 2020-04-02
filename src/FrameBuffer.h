@@ -9,22 +9,29 @@
 #pragma once
 #include "Color.h"
 #include "Geometry.h"
+#include "System.hh"
+#ifdef WITH_EMULATOR
+#include <SFML/Graphics.hpp>
+#else
 #include "Hal.h"
+#endif
 #include <algorithm>
 #include <array>
 #include <cmath>
 #include <gsl/gsl>
 
+#ifdef WITH_FIRMWARE
 extern "C" {
 #include "ws2812b/ws2812b.h"
 }
+#endif
 
 namespace le::fb {
 
 /**
  * BGR.
  */
-template <int W, int H> class FrameBuffer {
+template <int W, int H, typename Win> class FrameBuffer {
 public:
         static constexpr int WIDTH = W;
         static constexpr int HEIGHT = W;
@@ -32,7 +39,7 @@ public:
         static constexpr int BYTES_PER_PIXEL = 3;
         // static constexpr int FRAME_BUFFER_SIZEOF = PIXEL_COUNT ;
 
-        FrameBuffer ();
+        FrameBuffer (Win &win);
         FrameBuffer (FrameBuffer const &) = delete;
         FrameBuffer &operator= (FrameBuffer const &) = delete;
         FrameBuffer (FrameBuffer &&) = delete;
@@ -70,15 +77,16 @@ public:
         void display ();
 
 private:
-        /// Row after row. TODO Why not array of Colors?
         std::array<Color, PIXEL_COUNT> data{};
         std::array<Color, PIXEL_COUNT> flipped{};
+        Win &window;
 };
 
 /****************************************************************************/
 
-template <int W, int H> FrameBuffer<W, H>::FrameBuffer ()
+template <int W, int H, typename Win> FrameBuffer<W, H, Win>::FrameBuffer (Win &w) : window{w}
 {
+#ifdef WITH_FIRMWARE
         // Set output channel/pin, GPIO_PIN_0 = 0, for GPIO_PIN_5 = 5 - this has to correspond to WS2812B_PINS
         ws2812b.item[0].channel = 0;
         // Your RGB framebuffer
@@ -87,11 +95,12 @@ template <int W, int H> FrameBuffer<W, H>::FrameBuffer ()
         ws2812b.item[0].frameBufferSize = flipped.size ();
 
         ws2812b_init ();
+#endif
 }
 
 /****************************************************************************/
 
-template <int W, int H> void FrameBuffer<W, H>::postProcessBuffer ()
+template <int W, int H, typename Win> void FrameBuffer<W, H, Win>::postProcessBuffer ()
 {
         for (int yi = 0; yi < H; ++yi) {
                 for (int xi = 0; xi < W; ++xi) {
@@ -108,7 +117,8 @@ template <int W, int H> void FrameBuffer<W, H>::postProcessBuffer ()
  * @param frameBuffer
  * @param window
  */
-template <int W, int H> void FrameBuffer<W, H>::display ()
+#ifdef WITH_FIRMWARE
+template <int W, int H, typename Win> void FrameBuffer<W, H, Win>::display ()
 {
         if (ws2812b.transferComplete != 0) {
                 postProcessBuffer ();
@@ -116,5 +126,28 @@ template <int W, int H> void FrameBuffer<W, H>::display ()
                 ws2812b_handle ();
         }
 }
+#else
+template <int W, int H, typename Win> void FrameBuffer<W, H, Win>::display ()
+{
+        using namespace sf;
+
+        auto [winW, winH] = window.getSize ();
+        auto pixW = winW / float (WIDTH);
+        auto pixH = winH / float (HEIGHT);
+
+        // auto const &[pixW, pixH] = pixelDimension;
+
+        for (int y = 0; y < HEIGHT; ++y) {
+                for (int x = 0; x < WIDTH; ++x) {
+                        RectangleShape shape ({pixW, pixH});
+                        shape.setFillColor (get ({x, y}));
+                        shape.move ({std::round (float (x) * pixW), std::round (float (y) * pixH)});
+                        window.draw (shape);
+                }
+        }
+
+        le::system::getWindow ().display ();
+}
+#endif
 
 } // namespace le::fb

@@ -33,7 +33,7 @@ public:
         /// Returns system wide ms since system start.
         static uint32_t getTick ();
 
-protected:
+private:
         uint32_t startTime = 0;
         uint32_t intervalMs = 0;
 };

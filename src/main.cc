@@ -31,49 +31,14 @@ int main ()
         log::init ();
         printf ("Led table is alive\r\n");
 
-#ifdef WITH_EMULATOR
-        auto [winW, winH] = getWindow ().getSize ();
-        auto pixW = winW / float (FrameBufferType::WIDTH);
-        auto pixH = winH / float (FrameBufferType::HEIGHT);
-#endif
-        // Timer timer{};
-
         // tetrisConstructor ();
         le::snake::Game snake{getGraphics (), getButtonQueue ()};
 
-        bool running = true;
-        while (running) {
-#ifdef WITH_EMULATOR
-                sf::Event event{};
-
-                while (getWindow ().pollEvent (event)) {
-                        if (event.type == sf::Event::Closed) {
-                                getWindow ().close ();
-                                running = false;
-                                break;
-                        }
-
-                        if (event.type == sf::Event::KeyPressed) {
-                                getButtonQueue ().onPress ();
-                                // getButtons ().onPress ();
-                                // getSingleButton ().onPress ();
-                        }
-                        else if (event.type == sf::Event::KeyReleased) {
-                                getButtonQueue ().onRelease ();
-                                // getButtons ().onRelease ();
-                                // getSingleButton ().onRelease ();
-                        }
-                }
-#else
+        while (getWindow ().isOpen ()) {
+#ifdef WITH_FIRMWARE
                 getUsb ().run ();
-                getButtonQueue ().run ();
-
-                // auto b = getButtonFromUsb (getUsb ());
-
-                // if (b) {
-                //         printButtons (*b);
-                // }
 #endif
+                getButtonQueue ().run ();
 
 #ifdef WITH_EMULATOR
                 getWindow ().clear ();
@@ -81,10 +46,6 @@ int main ()
 
                 snake.run ();
                 getFrameBuffer ().display ();
-
-#ifdef WITH_EMULATOR
-                getWindow ().display ();
-#endif
         }
 
         return 0;
