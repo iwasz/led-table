@@ -15,12 +15,9 @@
 #include <cstdint>
 #include <cstring>
 
-#include "Snake.h"
+#include "games/snake/Snake.h"
+#include "games/sokoban/Sokoban.h"
 // #include "tinytetris/tinytetris.h"
-
-static constexpr int FRAME_DURATION_MS = 40;
-
-/*****************************************************************************/
 
 int main ()
 {
@@ -32,7 +29,8 @@ int main ()
         printf ("Led table is alive\r\n");
 
         // tetrisConstructor ();
-        le::snake::Game snake{getGraphics (), getButtonQueue ()};
+        // le::snake::Game game{getGraphics (), getButtonQueue ()};
+        le::sokoban::Game game{getGraphics (), getButtonQueue ()};
 
         while (getWindow ().isOpen ()) {
 #ifdef WITH_FIRMWARE
@@ -44,7 +42,7 @@ int main ()
                 getWindow ().clear ();
 #endif
 
-                snake.run ();
+                game.run ();
                 getFrameBuffer ().display ();
         }
 

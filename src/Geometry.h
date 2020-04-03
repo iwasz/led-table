@@ -21,6 +21,8 @@ using Point = PointT<int>;
 
 template <typename T> bool operator== (PointT<T> const &a, PointT<T> const &b) { return a.x == b.x && a.y == b.y; }
 template <typename T> bool operator!= (PointT<T> const &a, PointT<T> const &b) { return a.x != b.x || a.y != b.y; }
+template <typename T> Point operator+ (PointT<T> const &a, PointT<T> const &b) { return {a.x + b.x, a.y + b.y}; }
+template <typename T> Point operator- (PointT<T> const &a, PointT<T> const &b) { return {a.x - b.x, a.y - b.y}; }
 
 template <typename P> struct LineT {
         P a;

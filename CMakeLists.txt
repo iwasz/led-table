@@ -178,7 +178,8 @@ ENDIF ()
 
 ADD_EXECUTABLE(${CMAKE_PROJECT_NAME}.elf
     "src/main.cc"
-    "src/Snake.cc"
+    "src/games/snake/Snake.cc"
+    "src/games/sokoban/Board.cc"
 
     ${SOURCES}
 )
