@@ -46,7 +46,10 @@ private:
 
 template <typename F> template <typename T> void GenericGraphics<F>::path (T const &pointCollection)
 {
-        pathForEach (pointCollection, [this] (auto const &p1, auto const &p2) { line (p1, p2); });
+        pathForEach (pointCollection, [this] (auto const &p1, auto const &p2) {
+                line (p1, p2);
+                return true;
+        });
 }
 
 /****************************************************************************/

@@ -152,13 +152,15 @@ template <typename G, typename B> void Game<G, B>::run ()
         pathForEach (body.points, [this, head, &firstSkipped] (auto const &a, auto const &b) {
                 if (!firstSkipped) {
                         firstSkipped = true;
-                        return;
+                        return true;
                 }
 
                 if (intersects (Line{a, b}, head)) {
                         gameOver ();
-                        return;
+                        return false;
                 }
+
+                return true;
         });
 
         timer.start (LOOP_FREQ);
@@ -178,6 +180,8 @@ template <typename G, typename B> void Game<G, B>::generateApplesIfNecessary ()
                         if (intersects (Line{a, b}, newApple)) {
                                 appleOnTheBody = true;
                         }
+
+                        return true;
                 });
 
                 if (!appleOnTheBody) {

@@ -58,7 +58,10 @@ template <typename T, typename Act> void pathForEach (T const &pointCollection, 
                         continue;
                 }
 
-                act (prev, *i);
+                if (!act (prev, *i)) {
+                        return;
+                }
+
                 prev = *i;
         }
 }
