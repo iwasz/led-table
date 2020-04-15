@@ -33,7 +33,12 @@ public:
         void run () override;
         int getScore () const override { return 0; }
 
-        void reset () override {}
+        void reset () override
+        {
+                for (unsigned i = 0; i < WIDTH * HEIGHT; i++) {
+                        board->at (i) = rand () % 2;
+                }
+        }
 
 private:
         using Board = std::array<bool, HEIGHT * WIDTH>;
@@ -57,11 +62,8 @@ private:
 
 template <typename G, typename B> Game<G, B>::Game (G &graphics, B const &buttons) : graphics (graphics), buttons (buttons)
 {
-        srand (time (nullptr));
-
-        for (unsigned i = 0; i < WIDTH * HEIGHT; i++) {
-                board->at (i) = rand () % 2;
-        }
+        // srand (time (nullptr));
+        reset ();
 }
 
 /****************************************************************************/
@@ -70,6 +72,10 @@ template <typename G, typename B> void Game<G, B>::run ()
 {
         if (!timer.isExpired () || !runnuing) {
                 return;
+        }
+
+        if (auto pressed = buttons.getButton (); pressed && *pressed != Button::NONE) {
+                reset ();
         }
 
         graphics.clear ();
