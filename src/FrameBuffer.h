@@ -76,6 +76,9 @@ public:
 
         void display ();
 
+        uint8_t *getData () { return reinterpret_cast<uint8_t *> (data.data ()); }
+        uint8_t const *getData () const { return reinterpret_cast<uint8_t *> (data.data ()); }
+
 private:
         std::array<Color, PIXEL_COUNT> data{};
         std::array<Color, PIXEL_COUNT> flipped{};

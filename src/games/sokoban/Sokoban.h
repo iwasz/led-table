@@ -31,12 +31,14 @@ public:
         void run () override;
         int getScore () const override { return 0; }
 
-        void reset () override {}
+        void reset () override { board.load (levels.at (currentLevel)); }
 
 private:
         void gameOver () { reset (); }
         void draw () const;
         void move (Button b);
+        void nextLevel ();
+        void prevLevel ();
 
 private:
         G &graphics;
@@ -44,14 +46,16 @@ private:
         Timer timer;
         bool runnuing{true};
         Board board;
-        size_t currentLevel{};
+        int currentLevel{};
 };
 
 /****************************************************************************/
 
 template <typename G, typename B> Game<G, B>::Game (G &graphics, B const &buttons) : graphics (graphics), buttons (buttons)
 {
-        board.load (levels.at (currentLevel));
+        reset ();
+        graphics.clear ();
+        draw ();
 }
 
 /****************************************************************************/
@@ -62,11 +66,10 @@ template <typename G, typename B> void Game<G, B>::run ()
                 return;
         }
 
-        graphics.clear ();
-        draw ();
-
         if (auto pressed = buttons.getButton (); pressed) {
                 move (*pressed);
+                graphics.clear ();
+                draw ();
         }
 
         timer.start (50); // 20 FPS
@@ -77,11 +80,12 @@ template <typename G, typename B> void Game<G, B>::run ()
 template <typename G, typename B> void Game<G, B>::draw () const
 {
         Point off{std::max (0, (WIDTH - board.getWidth ()) / 2), std::max (0, (HEIGHT - board.getHeight ()) / 2)};
-
         Point p{};
+        bool success = board.checkSuccess ();
+
         for (Element e : board.getElements ()) {
                 if ((e & Element::wall) == Element::wall) {
-                        graphics.set (p + off, DARK_GRAY);
+                        graphics.set (p + off, (success) ? (LIGHT_BLUE) : (DARK_GRAY));
                 }
 
                 if ((e & Element::goal) == Element::goal) {
@@ -133,9 +137,43 @@ template <typename G, typename B> void Game<G, B>::move (Button b)
                 board.movePlayer (Heading::RIGHT);
                 break;
 
+        case Button::Q:
+                prevLevel ();
+                break;
+
+        case Button::O:
+                nextLevel ();
+                break;
+
+        case Button::X:
+                reset ();
+                break;
+
         default:
                 break;
         }
+}
+
+/****************************************************************************/
+
+template <typename G, typename B> void Game<G, B>::nextLevel ()
+{
+        if (++currentLevel >= int (levels.size ()) - 1) {
+                currentLevel = 0;
+        }
+
+        reset ();
+}
+
+/****************************************************************************/
+
+template <typename G, typename B> void Game<G, B>::prevLevel ()
+{
+        if (--currentLevel < 0) {
+                currentLevel = int (levels.size ()) - 1;
+        }
+
+        reset ();
 }
 
 } // namespace le::sokoban

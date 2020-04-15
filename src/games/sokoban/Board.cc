@@ -35,7 +35,7 @@ bool Board::moveCrate (Point const &crate, Heading h)
 {
         Point dest = destPoint (crate, h);
 
-        if (get (dest) == Element::wall) {
+        if (Element crtDst = get (dest); crtDst == Element::wall || (crtDst & Element::crate) == Element::crate) {
                 return false;
         }
 
@@ -108,6 +108,24 @@ void Board::load (Level const &l)
                         }
                 }
         }
+}
+
+/****************************************************************************/
+
+bool Board::checkSuccess () const
+{
+        bool success = true;
+
+        for (auto e : elements) {
+                if ((e & Element::goal) == Element::goal) {
+                        if ((e & Element::crate) != Element::crate) {
+                                success = false;
+                                break;
+                        }
+                }
+        }
+
+        return success;
 }
 
 } // namespace le::sokoban

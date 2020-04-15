@@ -68,6 +68,7 @@ public:
         auto getWidth () const { return width; }
         auto getHeight () const { return height; }
         auto const &getPlayer () const { return player; }
+        bool checkSuccess () const;
 
 private:
         Point player;

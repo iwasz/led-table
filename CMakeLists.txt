@@ -8,6 +8,7 @@ ENABLE_LANGUAGE (ASM-ATT)
 INCLUDE_DIRECTORIES("src/")
 INCLUDE_DIRECTORIES("deps/etl/include/")
 include_directories ("deps/GSL/include")
+include_directories ("deps/gifdec")
 
 # DEVICE is defined in the toolchain file, so if it's present, we assume that the firmware is beeing built.
 IF (DEFINED DEVICE)
@@ -180,7 +181,11 @@ ADD_EXECUTABLE(${CMAKE_PROJECT_NAME}.elf
     "src/main.cc"
     "src/games/snake/Snake.cc"
     "src/games/sokoban/Board.cc"
-
+    "deps/gifdec/gifdec.c"
+    # "src/goblin1.c"
+    # "src/goblin2.c"
+    "src/cat.c"
+    "src/formula1.c"
     ${SOURCES}
 )
 

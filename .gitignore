@@ -6,3 +6,5 @@ CMakeLists.txt.user.4.10-pre1
 build-led-table-stm32f446xx-Debug
 build
 compile_commands.json
+build-*
+*.gif
