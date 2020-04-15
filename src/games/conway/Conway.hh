@@ -62,7 +62,10 @@ private:
 
 template <typename G, typename B> Game<G, B>::Game (G &graphics, B const &buttons) : graphics (graphics), buttons (buttons)
 {
-        // srand (time (nullptr));
+#ifdef WITH_EMULATOR
+        // TODO rand peripheral should be used on the target.
+        srand (time (nullptr));
+#endif
         reset ();
 }
 
