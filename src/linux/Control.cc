@@ -55,9 +55,6 @@ void ButtonQueue::onPress ()
         else if (sf::Keyboard::isKeyPressed (sf::Keyboard::D)) {
                 currentButton = Button::D;
         }
-        if (sf::Keyboard::isKeyPressed (sf::Keyboard::Q)) {
-                currentButton = Button::Q;
-        }
         else if (sf::Keyboard::isKeyPressed (sf::Keyboard::I)) {
                 currentButton = Button::I;
         }
@@ -74,7 +71,7 @@ void ButtonQueue::onPress ()
                 currentButton = Button::O;
         }
 
-        if (queue.size () < 4) {
+        if (queue.size () < 4 && currentButton != Button::NONE) {
                 queue.push_back (currentButton);
         }
 }
@@ -85,12 +82,26 @@ void ButtonQueue::onRelease () {}
 
 /****************************************************************************/
 
-Button ButtonQueue::getButtons () const
+// Button ButtonQueue::getButtons () const
+// {
+//         if (!queue.empty ()) {
+//                 auto tmp = queue.front ();
+//                 queue.pop_front ();
+//                 return tmp;
+//         }
+
+//         return Button::NONE;
+// }
+
+Button ButtonQueue::getButtons (Button which) const
 {
         if (!queue.empty ()) {
                 auto tmp = queue.front ();
-                queue.pop_front ();
-                return tmp;
+
+                if ((tmp & which) == tmp) {
+                        queue.pop_front ();
+                        return tmp;
+                }
         }
 
         return Button::NONE;

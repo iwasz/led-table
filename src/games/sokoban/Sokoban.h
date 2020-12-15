@@ -27,6 +27,7 @@ public:
         static constexpr int HEIGHT = G::HEIGHT;
 
         explicit Game (G &graphics, B const &buttons);
+        ~Game () { printf ("~Sokoban\n"); }
 
         void run () override;
         int getScore () const override { return 0; }
@@ -66,7 +67,7 @@ template <typename G, typename B> void Game<G, B>::run ()
                 return;
         }
 
-        if (auto pressed = buttons.getButton (); pressed) {
+        if (auto pressed = buttons.getButton (Button::I | Button::J | Button::K | Button::L | Button::Q | Button::O | Button::X); pressed) {
                 move (*pressed);
                 graphics.clear ();
                 draw ();

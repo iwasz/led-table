@@ -12,6 +12,7 @@ namespace le {
 
 enum class Button : unsigned int {
         NONE = 0x0000,
+        ALL = 0xffff,
         Q = 0x0001, // L
         W = 0x0002, // Joystick up 100%
         A = 0x0004, // Joystick left 100%

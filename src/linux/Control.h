@@ -19,8 +19,17 @@ class ButtonQueue {
 public:
         void run ();
 
-        Button getButtons () const;
-        std::optional<Button> getButton () const { return getButtons (); }
+        Button getButtons (Button which) const;
+
+        std::optional<Button> getButton (Button which) const
+        {
+                auto b = getButtons (which);
+                if (b != Button::NONE) {
+                        return b;
+                }
+
+                return {};
+        }
 
 private:
         void onPress ();

@@ -60,6 +60,7 @@ public:
         static constexpr int INITIAL_LEN = 3;
 
         explicit Game (G &graphics, B const &buttons);
+        ~Game () { printf ("~Snake\n"); }
 
         void run () override;
         int getScore () const override { return body.length - INITIAL_LEN; }
@@ -85,7 +86,7 @@ private:
         }
 
 private:
-        static constexpr int LOOP_FREQ{100};
+        static constexpr int LOOP_FREQ{200};
         static constexpr Point ENTRY_POINT{0, HEIGHT / 2};
 
         Body body{ENTRY_POINT, INITIAL_LEN};
@@ -119,7 +120,7 @@ template <typename G, typename B> void Game<G, B>::run ()
         drawSnake ();
         drawApples ();
 
-        if (auto pressed = buttons.getButton (); pressed) {
+        if (auto pressed = buttons.getButton (Button::I | Button::J | Button::K | Button::L); pressed) {
                 if (auto heading = buttonsToHeading (*pressed); heading) {
                         if (*heading == oppositeHeading (body.headDirection)) {
                                 gameOver ();

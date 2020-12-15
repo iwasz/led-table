@@ -77,7 +77,7 @@ template <typename G, typename B> void Game<G, B>::run ()
                 return;
         }
 
-        if (auto pressed = buttons.getButton (); pressed && *pressed != Button::NONE) {
+        if (auto pressed = buttons.getButton (Button::I); pressed && *pressed != Button::NONE) {
                 reset ();
         }
 
