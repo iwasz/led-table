@@ -24,6 +24,14 @@ struct Color {
 #endif
 };
 
+inline Color fromBGR565 (uint16_t c)
+{
+        c = __builtin_bswap16 (c);
+        // return {uint8_t ((c >> 11) << 3), uint8_t (((c & 0x11111100000) >> 5) << 2), uint8_t ((c & 0b11111) << 3)};
+        // return {uint8_t (((c >> 11) & 0b11111) << 3), uint8_t (((c >> 5) & 0x111111) << 2), uint8_t ((c & 0b11111) << 3)};
+        return {uint8_t (((c >> 11) & 0b11111) << 3), uint8_t (((c >> 5) & 0x111111) << 2), uint8_t ((c & 0b11111) << 3)};
+}
+
 static constexpr Color BLACK{0, 0, 0};
 static constexpr Color WHITE{255, 255, 255};
 static constexpr Color LIGHT_GRAY{224, 224, 224};

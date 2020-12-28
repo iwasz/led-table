@@ -8,7 +8,7 @@
 
 #include "Buttons.h"
 #include <cstdio>
-#include <etl/cstring.h>
+#include <etl/string.h>
 #include <gsl/gsl>
 
 namespace le {

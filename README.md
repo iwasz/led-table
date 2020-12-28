@@ -1,3 +1,7 @@
+# Bugs
+* [ ] one of the snake's segments was (9,1) - (9,-1). 
+* [ ] 
+
 # What?
 This is a firmware for [my 32x32 LED table](https://hackaday.io/project/170709-32x32-led-table-with-usb-hid) which is an interactive table that uses HID input devices for control. It accepts USb gamepad(s) and keyboards. 
 

@@ -68,6 +68,7 @@ public:
         void reset () override
         {
                 body = Body{ENTRY_POINT, INITIAL_LEN};
+                currentFreq = LOOP_FREQ;
                 apples.clear ();
         }
 
@@ -95,6 +96,7 @@ private:
         Timer timer;
         std::vector<Point> apples;
         bool runnuing{true};
+        int currentFreq{LOOP_FREQ};
 };
 
 /****************************************************************************/
@@ -140,6 +142,11 @@ template <typename G, typename B> void Game<G, B>::run ()
                 // fmt::print ("Score : {}\n", ++j);
                 body.lenghten ();
                 apples.erase (i);
+                --currentFreq;
+
+                if (currentFreq < 0) {
+                        currentFreq = 0;
+                }
         }
 
         // Collision with walls (screen boundarties)
@@ -164,7 +171,7 @@ template <typename G, typename B> void Game<G, B>::run ()
                 return true;
         });
 
-        timer.start (LOOP_FREQ);
+        timer.start (currentFreq);
 }
 
 /****************************************************************************/

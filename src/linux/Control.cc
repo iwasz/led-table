@@ -71,8 +71,12 @@ void ButtonQueue::onPress ()
                 currentButton = Button::O;
         }
 
-        if (queue.size () < 4 && currentButton != Button::NONE) {
-                queue.push_back (currentButton);
+        if (    currentButton != Button::NONE) {
+                if (queue.full ()) {
+                        queue.pop_front ();
+                }
+
+                queue.push_back(currentButton);
         }
 }
 
@@ -82,26 +86,19 @@ void ButtonQueue::onRelease () {}
 
 /****************************************************************************/
 
-// Button ButtonQueue::getButtons () const
-// {
-//         if (!queue.empty ()) {
-//                 auto tmp = queue.front ();
-//                 queue.pop_front ();
-//                 return tmp;
-//         }
-
-//         return Button::NONE;
-// }
-
 Button ButtonQueue::getButtons (Button which) const
-{
-        if (!queue.empty ()) {
-                auto tmp = queue.front ();
+ {
+        for (auto i = queue.begin (); i != queue.end (); ) {
+                auto b = *i;
+                auto j = i;
+                ++j;
 
-                if ((tmp & which) == tmp) {
-                        queue.pop_front ();
-                        return tmp;
+                if ((b & which) == b) {
+                        queue.erase (i);
+                        return b;
                 }
+
+                i = j;
         }
 
         return Button::NONE;

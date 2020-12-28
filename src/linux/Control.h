@@ -10,7 +10,7 @@
 #include "Buttons.h"
 #include "Timer.h"
 #include <SFML/Graphics.hpp>
-#include <deque>
+#include <etl/list.h>
 #include <optional>
 
 namespace le {
@@ -24,6 +24,7 @@ public:
         std::optional<Button> getButton (Button which) const
         {
                 auto b = getButtons (which);
+
                 if (b != Button::NONE) {
                         return b;
                 }
@@ -36,7 +37,8 @@ private:
         void onRelease ();
 
 private:
-        mutable std::deque<Button> queue;
+        mutable etl::list <Button, 4> queue;
+
 };
 
 } // namespace le

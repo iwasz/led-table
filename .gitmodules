@@ -10,3 +10,6 @@
 [submodule "deps/umm_malloc"]
 	path = deps/umm_malloc
 	url = https://github.com/rhempel/umm_malloc.git
+[submodule "deps/AnimatedGIF"]
+	path = deps/AnimatedGIF
+	url = git@github.com:bitbank2/AnimatedGIF.git

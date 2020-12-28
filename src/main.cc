@@ -18,11 +18,14 @@
 #include "games/snake/Snake.h"
 #include "games/sokoban/Sokoban.h"
 // #include "tinytetris/tinytetris.h"
+#include "games/backlight/Backlight.hh"
 #include "games/conway/Conway.hh"
 
-extern "C" {
-#include "gifdec.h"
-}
+// extern "C" {
+// #include "gifdec.h"
+// }
+
+#include <AnimatedGIF.h>
 
 // extern "C" unsigned char goblin1_gif[];
 // extern "C" unsigned int goblin1_gif_len;
@@ -33,14 +36,17 @@ extern "C" unsigned int cat_gif_len;
 extern "C" unsigned char formula1_gif[];
 extern "C" unsigned int formula1_gif_len;
 
-extern "C" unsigned char bot_gif[];
-extern "C" unsigned int bot_gif_len;
+// extern "C" unsigned char bot_gif[];
+// extern "C" unsigned int bot_gif_len;
 
 namespace le::gif {
 template <typename Fb> class Gif : public le::IGame {
 public:
         explicit Gif (Fb &fb) : frameBuffer{fb} {}
-        ~Gif () { gd_close_gif (gif); }
+        ~Gif ()
+        { /* gd_close_gif (gif); */
+                gif.close ();
+        }
         void load (gsl::span<uint8_t> data);
         void run ();
 
@@ -48,26 +54,73 @@ public:
         void reset () override {}
 
 private:
+        static void GIFDraw (GIFDRAW *pDraw);
+
+        static constexpr int DISPLAY_WIDTH = 32;
+        AnimatedGIF gif;
         Fb &frameBuffer;
-        // std::vector<uint8_t> frame;
-        gd_GIF *gif{};
         Timer timer{};
 };
+
+template <typename Fb> void Gif<Fb>::GIFDraw (GIFDRAW *pDraw)
+{
+        uint8_t *s;
+        int x, y, iWidth;
+        // static uint8_t ucPalette[256]; // thresholded palette
+
+        // if (pDraw->y == 0) // first line, convert palette to 0/1
+        // {
+        //         for (x = 0; x < 256; x++) {
+        //                 uint16_t usColor = pDraw->pPalette[x];
+        //                 int gray = (usColor & 0xf800) >> 8; // red
+        //                 gray += ((usColor & 0x7e0) >> 2);   // plus green*2
+        //                 gray += ((usColor & 0x1f) << 3);    // plus blue
+        //                 ucPalette[x] = (gray >> 9);         // 0->511 = 0, 512->1023 = 1
+        //         }
+        // }
+        uint16_t *ucPalette = pDraw->pPalette;
+
+        y = pDraw->iY + pDraw->y; // current line
+        iWidth = pDraw->iWidth;
+        if (iWidth > DISPLAY_WIDTH) iWidth = DISPLAY_WIDTH;
+
+        s = pDraw->pPixels;
+        if (pDraw->ucDisposalMethod == 2) // restore to background color
+        {
+                for (x = 0; x < iWidth; x++) {
+                        if (s[x] == pDraw->ucTransparent) s[x] = pDraw->ucBackground;
+                }
+                pDraw->ucHasTransparency = 0;
+        }
+        // Apply the new pixels to the main image
+        if (pDraw->ucHasTransparency) // if transparency used
+        {
+                uint8_t c, ucTransparent = pDraw->ucTransparent;
+                int x;
+                for (x = 0; x < iWidth; x++) {
+                        c = *s++;
+                        if (c != ucTransparent) {
+                                getFrameBuffer ().set ({pDraw->iX + x, y}, le::fromBGR565 (ucPalette[c]));
+                                // DrawPixel (pDraw->iX + x, y, ucPalette[c]);
+                        }
+                }
+        }
+        else {
+                s = pDraw->pPixels;
+                // Translate the 8-bit pixels through the RGB565 palette (already byte reversed)
+                for (x = 0; x < pDraw->iWidth; x++) {
+                        getFrameBuffer ().set ({pDraw->iX + x, y}, le::fromBGR565 (ucPalette[*s++]));
+                        // DrawPixel (pDraw->iX + x, y, ucPalette[*s++]);
+                }
+        }
+} /* GIFDraw() */
 
 /****************************************************************************/
 
 template <typename Fb> void Gif<Fb>::load (gsl::span<uint8_t> data)
 {
-        gif = gd_open_gif (data.data (), data.size ());
-
-        if (!gif) {
-                printf ("Error during opening a GIF\r\n");
-                return;
-        }
-
-        if (gif->width != 32 || gif->height != 32) {
-                printf ("Only 32x32 gifs\r\n");
-                return;
+        if (!gif.open (data.data (), data.size (), GIFDraw)) {
+                printf ("Error opening a gif\r\n");
         }
 }
 
@@ -79,24 +132,9 @@ template <typename Fb> void Gif<Fb>::run ()
                 return;
         }
 
-        if (gif == nullptr) {
-                return;
-        }
-
-        auto ret = gd_get_frame (gif);
-
-        if (ret < 0) {
-                printf ("GIT get frame error\r\n");
-                return;
-        }
-
-        timer.start (gif->gce.delay * 10);
-
-        gd_render_frame (gif, frameBuffer.getData ());
-
-        if (ret == 0) {
-                gd_rewind (gif);
-        }
+        int delayMilliseconds{};
+        gif.playFrame (true, &delayMilliseconds);
+        timer.start (delayMilliseconds);
 }
 
 } // namespace le::gif
@@ -142,15 +180,18 @@ int main ()
                         return std::unique_ptr<le::IGame>{new le::conway::Game{getGraphics (), getButtonQueue ()}};
                 },
                 [] {
+                        return std::unique_ptr<le::IGame>{new le::backlight::Game{getGraphics (), getButtonQueue ()}};
+                },
+                [] {
                         auto gif = new le::gif::Gif{getFrameBuffer ()};
                         gif->load ({cat_gif, cat_gif_len});
                         return std::unique_ptr<le::IGame>{gif};
-                },
+                }/* ,
                 [] {
                         auto gif = new le::gif::Gif{getFrameBuffer ()};
                         gif->load ({formula1_gif, formula1_gif_len});
                         return std::unique_ptr<le::IGame>{gif};
-                });
+                } */);
 
         int currentGame = 0;
         int gamesNum = std::tuple_size<decltype (games)>::value;

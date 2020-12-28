@@ -11,9 +11,9 @@
 #include "Timer.h"
 #include "UsbHidController.hh"
 #include <deque>
-#include <etl/cstring.h>
-#include <etl/deque.h>
+#include <etl/string.h>
 #include <optional>
+#include <etl/list.h>
 
 namespace le {
 
@@ -96,11 +96,12 @@ public:
 
         void run ();
 
-        Button getButtons () const;
+        Button getButtons (Button which) const;
 
         std::optional<Button> getButton (Button which) const
         {
                 auto b = getButtons (which);
+
                 if (b != Button::NONE) {
                         return b;
                 }
@@ -114,7 +115,7 @@ private:
         void check (Button diff, Button current, Button button);
 
 private:
-        mutable etl::deque<Button, 4> queue;
+        mutable etl::list <Button, 4> queue;
         Impl &usb;
         Button previous{};
 };
@@ -165,12 +166,14 @@ template <typename Impl> void ButtonQueue<Impl>::check (Button diff, Button curr
 
 template <typename Impl> void ButtonQueue<Impl>::onPress (Button b)
 {
-        // printf ("Pr ");
-        // printButtons (b);
+        if (    b != Button::NONE) {
+                if (queue.full ()) {
+                        queue.pop_front ();
+                }
 
-        if (queue.size () < 4) {
-                queue.push_back (b);
+                queue.push_back(b);
         }
+
 }
 
 /****************************************************************************/
@@ -183,12 +186,19 @@ template <typename Impl> void ButtonQueue<Impl>::onRelease (Button b)
 
 /****************************************************************************/
 
-template <typename Impl> Button ButtonQueue<Impl>::getButtons () const
+template <typename Impl> Button ButtonQueue<Impl>::getButtons (Button which) const
 {
-        if (!queue.empty ()) {
-                auto tmp = queue.front ();
-                queue.pop_front ();
-                return tmp;
+        for (auto i = queue.begin (); i != queue.end (); ) {
+                auto b = *i;
+                auto j = i;
+                ++j;
+
+                if ((b & which) == b) {
+                        queue.erase (i);
+                        return b;
+                }
+
+                i = j;
         }
 
         return Button::NONE;

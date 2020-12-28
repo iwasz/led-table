@@ -1,4 +1,4 @@
-CMAKE_MINIMUM_REQUIRED(VERSION 2.8)
+CMAKE_MINIMUM_REQUIRED(VERSION 3.0)
 SET (CMAKE_VERBOSE_MAKEFILE OFF)
 SET (CMAKE_TRY_COMPILE_TARGET_TYPE "STATIC_LIBRARY")
 
@@ -8,7 +8,10 @@ ENABLE_LANGUAGE (ASM-ATT)
 INCLUDE_DIRECTORIES("src/")
 INCLUDE_DIRECTORIES("deps/etl/include/")
 include_directories ("deps/GSL/include")
-include_directories ("deps/gifdec")
+# include_directories ("deps/gifdec")
+include_directories ("deps/AnimatedGIF/src/")
+
+add_definitions(-D__LINUX__)
 
 # DEVICE is defined in the toolchain file, so if it's present, we assume that the firmware is beeing built.
 IF (DEFINED DEVICE)
@@ -181,11 +184,15 @@ ADD_EXECUTABLE(${CMAKE_PROJECT_NAME}.elf
     "src/main.cc"
     "src/games/snake/Snake.cc"
     "src/games/sokoban/Board.cc"
-    "deps/gifdec/gifdec.c"
+
+    "deps/AnimatedGIF/src/AnimatedGIF.cpp"
+    "deps/AnimatedGIF/src/gif.c"
+    # "deps/gifdec/gifdec.c"
+
     # "src/goblin1.c"
     # "src/goblin2.c"
     "src/cat.c"
-    "src/formula1.c"
+    # "src/formula1.c"
     ${SOURCES}
 )
 
